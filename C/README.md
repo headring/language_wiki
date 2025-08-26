@@ -1,0 +1,2 @@
+- 기본 참고서: [세종대 C언어 소개서](https://sejong-kr.libguides.com/c.php?g=942233&p=6822354)
+- 심회 참고서: [wikidocs - 함수와 함께하는 C언어](https://wikidocs.net/book/10226)
