@@ -1,1 +1,2 @@
 - 기본 참고서: [왕초보를 위한 Python: 쉽게 풀어 쓴 기초 문법과 실습](https://wikidocs.net/book/2)
+- 추가 참고서: [점프 투 파이썬](https://wikidocs.net/book/1)
