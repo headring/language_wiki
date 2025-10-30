@@ -8,7 +8,8 @@ public class B_Variable {
     System.out.println("Start app!");
     // list();
     // map();
-    setVariable();
+    // setVariable();
+    enumVariable();
   }
 
   //숫자
@@ -109,6 +110,48 @@ public class B_Variable {
     // import java.util.HashSet; 추가
     HashSet<String> set = new HashSet(Arrays.asList("H", "e", "l", "l", "o"));
     System.out.println(set);  //  [e, H, l, o] 출력 
+
+    HashSet<Integer> s1 = new HashSet<>(Arrays.asList(1, 2, 3, 4, 5, 6));
+    HashSet<Integer> s2 = new HashSet<>(Arrays.asList(4, 5, 6, 7, 8, 9));
+    // 교집합
+    HashSet<Integer> intersection = new HashSet<>(s1);  // s1으로 intersection 생성
+    intersection.retainAll(s2);  // 교집합 수행
+    System.out.println(intersection);  // [4, 5, 6] 출력
+
+    // 합집합
+     HashSet<Integer> union = new HashSet<>(s1);  // s1으로 union 생성
+    union.addAll(s2); // 합집합 수행
+    System.out.println(union);  // [1, 2, 3, 4, 5, 6, 7, 8, 9] 출력
+
+    // 차집합
+    HashSet<Integer> subtract = new HashSet<>(s1);  // s1으로 subtract 생성
+    subtract.removeAll(s2); // 차집합 수행
+    System.out.println(subtract);  // [1, 2, 3] 출력
   }
+
+
+  // 상수 집합 -> as const랑 비슷비슷
+  public static void enumVariable(){
+    enum CoffeeType {
+      AMERICANO,
+      ICE_AMERICANO,
+      CAFE_LATTE
+    };
+
+    System.out.println(CoffeeType.AMERICANO);
+    System.out.println(CoffeeType.values());
+    for(CoffeeType type: CoffeeType.values()) {
+      System.out.println(type);  // 순서대로 AMERICANO, ICE_AMERICANO, CAFE_LATTE 출력
+    }
+  }
+
+
+  // final 키워드
+  public static void finalVariable(){
+    final int n = 123;  // final로 설정하면 값을 바꿀 수 없다.
+    // n = 456;  // 컴파일 오류 발생
+  }
+
+
 }
 
