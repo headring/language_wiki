@@ -2,6 +2,8 @@
 
 int worngConnection(void);
 int pointerFunc(void);
+void Swap(int*, int*);
+int doublePointer(void);
 
 int main(void){
   int x;
@@ -18,6 +20,12 @@ int main(void){
   // s[2] 또는 *(s+2) === 3
 
   printf("배열 내부의 값은 %d \n", *(s+1));
+
+  // 포인터 매개변수
+  int num1 = 123, num2 = 456;
+  Swap(&num1, &num2);
+
+  doublePointer();
  
   return 0;
 
@@ -57,4 +65,36 @@ int pointerFunc(void){
   // n2는 15인데 이 주소에 p1, p2가 연결되어 있음
 
   return 0;
+}
+
+
+/**
+* 포인터 매개변수
+*/
+void Swap(int* p1, int* p2)
+{
+  int temp;
+  temp = *p1;
+  *p1 = *p2;
+  *p2 = temp;
+}
+
+
+
+int doublePointer(void)
+{
+    int i;
+    i = 10;
+
+    int* p;
+    p = &i;
+
+    int** q;    // int* * q;
+    q = &p;
+
+    *p = 20;
+    **q = 30;
+    printf("p %d", *p);
+    printf("p %d", **q);
+    return 0;
 }

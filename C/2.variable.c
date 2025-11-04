@@ -1,4 +1,8 @@
 #include <stdio.h>
+// 메크로 상수
+#define PI 3.14159265
+// const 변수는 컴파일 타임에 자료형 검사 가능
+const int PI2 = 3.14159265;
 
 
 int main(void)
