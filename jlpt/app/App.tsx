@@ -24,6 +24,8 @@ import { initializeDatabase } from "./src/db/init";
 import { useAppStore } from "./src/store/useAppStore";
 import type { JlptLevel, PresetRow, SessionSnapshot } from "./src/types/study";
 
+const SHUFFLE_TRANSITION_MS = 280;
+
 function AppShell() {
   const db = useSQLiteContext();
   const {
@@ -37,10 +39,15 @@ function AppShell() {
   const [loading, setLoading] = useState(true);
   const [levels, setLevels] = useState<JlptLevel[]>([]);
   const [presets, setPresets] = useState<PresetRow[]>([]);
-  const [activeSession, setActiveSession] = useState<SessionSnapshot | null>(null);
-  const [studySnapshot, setStudySnapshot] = useState<SessionSnapshot | null>(null);
+  const [activeSession, setActiveSession] = useState<SessionSnapshot | null>(
+    null,
+  );
+  const [studySnapshot, setStudySnapshot] = useState<SessionSnapshot | null>(
+    null,
+  );
   const [showMeaning, setShowMeaning] = useState(false);
   const [showReading, setShowReading] = useState(false);
+  const [isReshuffling, setIsReshuffling] = useState(false);
 
   const screen = useMemo(() => {
     if (currentSessionId) {
@@ -51,6 +58,11 @@ function AppShell() {
     }
     return "levels";
   }, [currentLevel, currentSessionId]);
+
+  const getStudyProgressLabel = (snapshot: SessionSnapshot) =>
+    `${snapshot.session.knownWords}/${snapshot.session.totalWords}`;
+
+  const getPassLabel = (passNo: number) => `${passNo}번째 회독`;
 
   const refreshHome = async () => {
     const [nextLevels, nextActiveSession] = await Promise.all([
@@ -181,6 +193,13 @@ function AppShell() {
         return;
       }
 
+      if (result.reshuffled) {
+        setIsReshuffling(true);
+        await new Promise((resolve) =>
+          setTimeout(resolve, SHUFFLE_TRANSITION_MS),
+        );
+      }
+
       const snapshot = await getSessionSnapshot(db, currentSessionId);
       setStudySnapshot(snapshot);
       setShowMeaning(false);
@@ -189,6 +208,7 @@ function AppShell() {
       console.error(error);
       Alert.alert("학습 처리 실패", "현재 카드를 처리하지 못했습니다.");
     } finally {
+      setIsReshuffling(false);
       setLoading(false);
     }
   };
@@ -214,7 +234,8 @@ function AppShell() {
           <Text style={styles.eyebrow}>Offline First JLPT</Text>
           <Text style={styles.title}>회독 큐 학습</Text>
           <Text style={styles.subtitle}>
-            처음 들어올 때 단어를 내려받고, 이후에는 비행기 모드에서도 계속 회독합니다.
+            처음 들어올 때 단어를 내려받고, 이후에는 비행기 모드에서도 계속
+            회독합니다.
           </Text>
 
           {activeSession ? (
@@ -224,7 +245,8 @@ function AppShell() {
                 {activeSession.session.jlptLevel} {activeSession.preset.label}
               </Text>
               <Text style={styles.panelBody}>
-                남은 카드 {activeSession.pendingCount}개 · 현재 패스 {activeSession.session.currentPassNo}
+                남은 카드 {activeSession.pendingCount}개 ·{" "}
+                {getPassLabel(activeSession.session.currentPassNo)}
               </Text>
               <Pressable style={styles.primaryButton} onPress={handleResume}>
                 <Text style={styles.primaryButtonText}>이어하기</Text>
@@ -244,7 +266,9 @@ function AppShell() {
             >
               <View>
                 <Text style={styles.levelTitle}>{level.jlptLevel}</Text>
-                <Text style={styles.levelMeta}>{level.wordCount}개 샘플 단어</Text>
+                <Text style={styles.levelMeta}>
+                  {level.wordCount}개 샘플 단어
+                </Text>
               </View>
               <Text style={styles.levelChevron}>열기</Text>
             </Pressable>
@@ -267,7 +291,8 @@ function AppShell() {
           </View>
 
           <Text style={styles.subtitle}>
-            세트에 들어갈 때마다 시작 순서를 셔플합니다. 한 패스가 끝나면 남은 모르는 카드만 다시 셔플합니다.
+            세트에 들어갈 때마다 시작 순서를 셔플합니다. 한 회독이 끝나면 남은
+            모르는 카드만 다시 셔플합니다.
           </Text>
 
           {presets.map((preset) => (
@@ -278,7 +303,8 @@ function AppShell() {
             >
               <Text style={styles.presetTitle}>{preset.label}</Text>
               <Text style={styles.presetMeta}>
-                {preset.roundType.toUpperCase()} · 범위 {preset.rangeStart}-{preset.rangeEnd}
+                {preset.roundType.toUpperCase()} · 범위 {preset.rangeStart}-
+                {preset.rangeEnd}
               </Text>
             </Pressable>
           ))}
@@ -307,33 +333,51 @@ function AppShell() {
           </View>
 
           <View style={styles.progressPanel}>
-            <Text style={styles.progressText}>
-              패스 {studySnapshot.session.currentPassNo} · 남은 카드 {studySnapshot.pendingCount}
-            </Text>
-            <Text style={styles.progressSubtext}>
-              현재 패스 미확인 {studySnapshot.unseenCount}개
-            </Text>
+            <View style={styles.progressHeaderRow}>
+              <Text style={styles.progressText}>
+                {getPassLabel(studySnapshot.session.currentPassNo)} 진행 중
+              </Text>
+              <Text style={styles.progressBadge}>
+                {getStudyProgressLabel(studySnapshot)}
+              </Text>
+            </View>
           </View>
 
           <View style={styles.studyCard}>
             <Text style={styles.kanji}>{studySnapshot.currentCard.kanji}</Text>
-            <Text style={styles.partOfSpeech}>{studySnapshot.currentCard.partOfSpeech ?? "단어"}</Text>
+            <Text style={styles.partOfSpeech}>
+              {studySnapshot.currentCard.partOfSpeech ?? "단어"}
+            </Text>
 
-            {showMeaning ? (
-              <View style={styles.revealBox}>
-                <Text style={styles.revealLabel}>한국어</Text>
-                <Text style={styles.revealText}>{studySnapshot.currentCard.meaningKo}</Text>
-              </View>
-            ) : null}
+            <View style={styles.revealBox}>
+              <Text style={styles.revealLabel}>한국어</Text>
+              <Text
+                style={[
+                  styles.revealText,
+                  !showMeaning && styles.revealTextHidden,
+                ]}
+              >
+                {showMeaning
+                  ? studySnapshot.currentCard.meaningKo
+                  : "뜻 미리보기"}
+              </Text>
+            </View>
 
-            {showReading ? (
-              <View style={styles.revealBox}>
-                <Text style={styles.revealLabel}>히라가나</Text>
-                <Text style={styles.revealText}>
-                  {studySnapshot.currentCard.readingHiragana ?? studySnapshot.currentCard.kana ?? "-"}
-                </Text>
-              </View>
-            ) : null}
+            <View style={styles.revealBox}>
+              <Text style={styles.revealLabel}>히라가나</Text>
+              <Text
+                style={[
+                  styles.revealText,
+                  !showReading && styles.revealTextHidden,
+                ]}
+              >
+                {showReading
+                  ? (studySnapshot.currentCard.readingHiragana ??
+                    studySnapshot.currentCard.kana ??
+                    "-")
+                  : "히라가나 미리보기"}
+              </Text>
+            </View>
 
             <View style={styles.toggleRow}>
               <Pressable
@@ -368,9 +412,13 @@ function AppShell() {
             {studySnapshot.currentCard.exampleJp ? (
               <View style={styles.exampleBox}>
                 <Text style={styles.exampleLabel}>예문</Text>
-                <Text style={styles.exampleText}>{studySnapshot.currentCard.exampleJp}</Text>
+                <Text style={styles.exampleText}>
+                  {studySnapshot.currentCard.exampleJp}
+                </Text>
                 {studySnapshot.currentCard.exampleKo ? (
-                  <Text style={styles.exampleSubtext}>{studySnapshot.currentCard.exampleKo}</Text>
+                  <Text style={styles.exampleSubtext}>
+                    {studySnapshot.currentCard.exampleKo}
+                  </Text>
                 ) : null}
               </View>
             ) : null}
@@ -378,9 +426,21 @@ function AppShell() {
         </ScrollView>
       ) : null}
 
-      {loading && screen !== "levels" ? (
+      {loading && screen !== "levels" && !isReshuffling ? (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="#0f766e" />
+        </View>
+      ) : null}
+
+      {isReshuffling ? (
+        <View style={styles.shuffleOverlay}>
+          <View style={styles.shufflePanel}>
+            <ActivityIndicator size="small" color="#0f766e" />
+            <Text style={styles.shuffleTitle}>셔플 중...</Text>
+            <Text style={styles.shuffleBody}>
+              남아 있는 카드를 다음 회독 순서로 다시 섞고 있습니다.
+            </Text>
+          </View>
         </View>
       ) : null}
     </SafeAreaView>
@@ -523,15 +583,32 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 20,
     padding: 16,
-    gap: 4,
+    gap: 8,
+  },
+  progressHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
   },
   progressText: {
     fontSize: 16,
     fontWeight: "800",
     color: "#12312d",
   },
+  progressBadge: {
+    backgroundColor: "#12312d",
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "800",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    overflow: "hidden",
+  },
   progressSubtext: {
     color: "#5a706b",
+    lineHeight: 20,
   },
   studyCard: {
     backgroundColor: "#ffffff",
@@ -556,6 +633,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     gap: 6,
+    minHeight: 86,
   },
   revealLabel: {
     fontSize: 12,
@@ -567,6 +645,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#12312d",
+    minHeight: 28,
+  },
+  revealTextHidden: {
+    opacity: 0,
   },
   toggleRow: {
     flexDirection: "row",
@@ -630,6 +712,34 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(244,247,244,0.6)",
     alignItems: "center",
     justifyContent: "center",
+  },
+  shuffleOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(18,49,45,0.16)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+  },
+  shufflePanel: {
+    width: "100%",
+    maxWidth: 320,
+    backgroundColor: "#ffffff",
+    borderRadius: 24,
+    paddingVertical: 24,
+    paddingHorizontal: 22,
+    alignItems: "center",
+    gap: 10,
+  },
+  shuffleTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#12312d",
+  },
+  shuffleBody: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: "#4f6662",
+    textAlign: "center",
   },
   primaryButton: {
     marginTop: 4,

@@ -1,0 +1,4 @@
+{"taskId":"translate-N5-n5-0001","kind":"translate-meaning","sourceId":"N5:n5.csv:2","level":"N5","input":{"expression":"ああ","reading":"ああ","meaningEnRaw":"Ah!, Oh!","tags":["JLPT","JLPT_4","JLPT_5","JLPT_N5"],"guid":"HI-.Ij?HS~"},"outputSchema":{"meaningKoVariants":["string"],"notes":["string"]}}
+{"taskId":"translate-N5-n5-0002","kind":"translate-meaning","sourceId":"N5:n5.csv:3","level":"N5","input":{"expression":"会う","reading":"あう","meaningEnRaw":"to meet, to see","tags":["JLPT","JLPT_3","JLPT_5","JLPT_N5"],"guid":"kupB!kWE}<"},"outputSchema":{"meaningKoVariants":["string"],"notes":["string"]}}
+{"taskId":"translate-N5-n5-0003","kind":"translate-meaning","sourceId":"N5:n5.csv:4","level":"N5","input":{"expression":"青","reading":"あお","meaningEnRaw":"blue","tags":["JLPT","JLPT_5","JLPT_N5"],"guid":"HB)I{+$j.i"},"outputSchema":{"meaningKoVariants":["string"],"notes":["string"]}}
+

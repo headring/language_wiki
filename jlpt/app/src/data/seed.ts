@@ -1,6 +1,11 @@
 import type { PresetSeed, WordSeed } from "../types/study";
+import {
+  IMPORTED_DATA_VERSION,
+  IMPORTED_PRESET_SEEDS,
+  IMPORTED_WORD_SEEDS,
+} from "./imported";
 
-export const WORD_SEEDS: WordSeed[] = [
+const SAMPLE_WORD_SEEDS: WordSeed[] = [
   { id: "n5-1", jlptLevel: "N5", sequenceInLevel: 1, kanji: "学生", kana: "ガクセイ", readingHiragana: "がくせい", meaningKo: "학생", partOfSpeech: "명사", exampleJp: "彼は日本語学校の学生です。", exampleKo: "그는 일본어학교 학생입니다.", isCommonLife: true },
   { id: "n5-2", jlptLevel: "N5", sequenceInLevel: 2, kanji: "水", kana: "ミズ", readingHiragana: "みず", meaningKo: "물", partOfSpeech: "명사", exampleJp: "水をもう一杯ください。", exampleKo: "물 한 잔 더 주세요.", isCommonLife: true },
   { id: "n5-3", jlptLevel: "N5", sequenceInLevel: 3, kanji: "食べる", kana: "タベル", readingHiragana: "たべる", meaningKo: "먹다", partOfSpeech: "동사", exampleJp: "朝ご飯を食べる。", exampleKo: "아침밥을 먹다.", isCommonLife: true },
@@ -37,34 +42,75 @@ export const WORD_SEEDS: WordSeed[] = [
   { id: "n1-6", jlptLevel: "N1", sequenceInLevel: 6, kanji: "気配", kana: "ケハイ", readingHiragana: "けはい", meaningKo: "기색, 낌새", partOfSpeech: "명사", exampleJp: "外に人の気配がする。", exampleKo: "밖에 사람 기척이 난다.", isCommonLife: true },
 ];
 
-export const PRESET_SEEDS: PresetSeed[] = (["N5", "N4", "N3", "N2", "N1"] as const).flatMap(
-  (level) => [
-    {
-      jlptLevel: level,
-      sequenceNo: 1,
-      presetCode: `${level}-0-3`,
-      label: `${level} 0-3`,
-      roundType: "micro",
-      rangeStart: 0,
-      rangeEnd: 3,
-    },
-    {
-      jlptLevel: level,
-      sequenceNo: 2,
-      presetCode: `${level}-0-6`,
-      label: `${level} 0-6`,
-      roundType: "merge",
-      rangeStart: 0,
-      rangeEnd: 6,
-    },
-    {
-      jlptLevel: level,
-      sequenceNo: 3,
-      presetCode: `${level}-3-6`,
-      label: `${level} 3-6`,
-      roundType: "block",
-      rangeStart: 3,
-      rangeEnd: 6,
-    },
-  ],
-);
+const MICRO_STEP = 100;
+const BLOCK_STEP = 300;
+const MERGE_STEP = 600;
+
+function createPreset(
+  jlptLevel: PresetSeed["jlptLevel"],
+  sequenceNo: number,
+  roundType: PresetSeed["roundType"],
+  rangeStart: number,
+  rangeEnd: number,
+): PresetSeed {
+  return {
+    jlptLevel,
+    sequenceNo,
+    presetCode: `${jlptLevel}-${rangeStart}-${rangeEnd}`,
+    label: `${jlptLevel} ${rangeStart}-${rangeEnd}`,
+    roundType,
+    rangeStart,
+    rangeEnd,
+  };
+}
+
+function buildPresetSeeds(words: WordSeed[]): PresetSeed[] {
+  const countsByLevel = new Map<PresetSeed["jlptLevel"], number>();
+
+  for (const word of words) {
+    const current = countsByLevel.get(word.jlptLevel) ?? 0;
+    countsByLevel.set(word.jlptLevel, Math.max(current, word.sequenceInLevel));
+  }
+
+  return Array.from(countsByLevel.entries()).flatMap(([level, totalCount]) => {
+    const presets: PresetSeed[] = [];
+    let sequenceNo = 1;
+    let previousEnd = 0;
+
+    while (previousEnd < totalCount) {
+      const nextEnd = Math.min(previousEnd + MICRO_STEP, totalCount);
+      presets.push(createPreset(level, sequenceNo, "micro", previousEnd, nextEnd));
+      sequenceNo += 1;
+
+      if (nextEnd % BLOCK_STEP === 0) {
+        presets.push(
+          createPreset(level, sequenceNo, "block", nextEnd - BLOCK_STEP, nextEnd),
+        );
+        sequenceNo += 1;
+      }
+
+      if (nextEnd % MERGE_STEP === 0) {
+        presets.push(createPreset(level, sequenceNo, "merge", 0, nextEnd));
+        sequenceNo += 1;
+      }
+
+      previousEnd = nextEnd;
+    }
+
+    return presets;
+  });
+}
+
+const SAMPLE_PRESET_SEEDS: PresetSeed[] = buildPresetSeeds(SAMPLE_WORD_SEEDS);
+const PRESET_POLICY_VERSION = "preset-policy-v2";
+
+export const WORD_SEEDS: WordSeed[] =
+  IMPORTED_WORD_SEEDS.length > 0 ? IMPORTED_WORD_SEEDS : SAMPLE_WORD_SEEDS;
+
+export const PRESET_SEEDS: PresetSeed[] =
+  IMPORTED_PRESET_SEEDS.length > 0 ? IMPORTED_PRESET_SEEDS : SAMPLE_PRESET_SEEDS;
+
+export const APP_DATA_VERSION =
+  IMPORTED_WORD_SEEDS.length > 0
+    ? `${IMPORTED_DATA_VERSION}-${PRESET_POLICY_VERSION}`
+    : `demo-1-${PRESET_POLICY_VERSION}`;

@@ -317,6 +317,7 @@ export async function getActiveSession(
 
 type ActionResult = {
   completed: boolean;
+  reshuffled: boolean;
 };
 
 export async function applyQueueAction(
@@ -325,6 +326,7 @@ export async function applyQueueAction(
   action: "study" | "know",
 ): Promise<ActionResult> {
   let completed = false;
+  let reshuffled = false;
 
   await db.withExclusiveTransactionAsync(async (txn) => {
     const session = await getSessionRow(txn, sessionId);
@@ -475,15 +477,20 @@ export async function applyQueueAction(
       sessionId,
     );
 
-    const reshuffled = shuffleArray(remaining);
+    const reshuffledQueue = shuffleArray(remaining);
     const nextPassNo = session.currentPassNo + 1;
+    reshuffled = true;
 
     await txn.runAsync(
-      "DELETE FROM session_queue_items WHERE session_id = ? AND state = 'pending'",
+      // Rebuild the session queue from the remaining pending cards only.
+      // Known rows still occupy prior `position` values, so deleting only
+      // pending rows can collide with the `(session_id, position)` PK when
+      // the next pass starts again from position 0.
+      "DELETE FROM session_queue_items WHERE session_id = ?",
       sessionId,
     );
 
-    for (let index = 0; index < reshuffled.length; index += 1) {
+    for (let index = 0; index < reshuffledQueue.length; index += 1) {
       await txn.runAsync(
         `
           INSERT INTO session_queue_items (
@@ -492,9 +499,9 @@ export async function applyQueueAction(
         `,
         sessionId,
         index,
-        reshuffled[index].wordId,
+        reshuffledQueue[index].wordId,
         nextPassNo,
-        reshuffled[index].cycleCount,
+        reshuffledQueue[index].cycleCount,
       );
     }
 
@@ -509,5 +516,5 @@ export async function applyQueueAction(
     );
   });
 
-  return { completed };
+  return { completed, reshuffled };
 }

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "JLPT example generation task",
+  "type": "object",
+  "required": ["taskId", "kind", "sourceId", "input", "outputSchema"],
+  "properties": {
+    "taskId": { "type": "string" },
+    "kind": { "const": "generate-example" },
+    "sourceId": { "type": "string" },
+    "level": { "type": "string" },
+    "input": {
+      "type": "object",
+      "required": ["expression", "reading", "meaningKoVariants"],
+      "properties": {
+        "expression": { "type": "string" },
+        "reading": { "type": "string" },
+        "meaningKoVariants": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "outputSchema": {
+      "type": "object",
+      "required": ["exampleJp", "exampleKo", "notes"],
+      "properties": {
+        "exampleJp": { "type": "string" },
+        "exampleKo": { "type": "string" },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
+
