@@ -38,6 +38,8 @@ export type PresetRow = {
   roundType: "micro" | "block" | "merge";
   rangeStart: number;
   rangeEnd: number;
+  completedStudyCount: number;
+  roundRecords: StudyRoundRecord[];
 };
 
 export type SessionRow = {
@@ -50,6 +52,20 @@ export type SessionRow = {
   totalWords: number;
   knownWords: number;
   studyWords: number;
+  isCompleted: number;
+  elapsedSeconds: number;
+  elapsedMilliseconds: number;
+  timerStartedAt: string | null;
+};
+
+export type StudyRoundRecord = {
+  id: number;
+  presetId: number;
+  sessionId: string;
+  roundNo: number;
+  elapsedSeconds: number;
+  elapsedMilliseconds: number;
+  completedAt: string;
 };
 
 export type CurrentCard = {
@@ -69,4 +85,12 @@ export type SessionSnapshot = {
   currentCard: CurrentCard;
   pendingCount: number;
   unseenCount: number;
+};
+
+export type HomeActiveSessionSummary = {
+  sessionId: string;
+  jlptLevel: JlptValue;
+  presetLabel: string;
+  pendingCount: number;
+  nextRoundNo: number;
 };

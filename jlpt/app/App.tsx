@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  AppState,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,17 +14,16 @@ import {
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-import {
-  applyQueueAction,
-  createSessionForPreset,
-  getActiveSession,
-  getLevels,
-  getPresetsByLevel,
-  getSessionSnapshot,
-} from "./src/features/study/engine";
+import { getLevels, getPresetsByLevel } from "./src/features/study/engine";
 import { initializeDatabase } from "./src/db/init";
 import { useAppStore } from "./src/store/useAppStore";
-import type { JlptLevel, PresetRow, SessionSnapshot } from "./src/types/study";
+import type {
+  JlptLevel,
+  PresetRow,
+  SessionRow,
+  SessionSnapshot,
+  StudyRoundRecord,
+} from "./src/types/study";
 
 const SHUFFLE_TRANSITION_MS = 280;
 
@@ -30,62 +31,114 @@ function AppShell() {
   const db = useSQLiteContext();
   const {
     currentLevel,
-    currentSessionId,
+    currentSessionSnapshot,
+    homeActiveSessionSummary,
+    isSessionLoading,
     openLevel,
-    openStudy,
     goHome,
-    goPresets,
+    syncHomeActiveSessionSummary,
+    startPreset,
+    resumeActiveSession,
+    leaveStudy,
+    handleQueueAction,
   } = useAppStore();
-  const [loading, setLoading] = useState(true);
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
+  const [isPresetLoading, setIsPresetLoading] = useState(false);
   const [levels, setLevels] = useState<JlptLevel[]>([]);
   const [presets, setPresets] = useState<PresetRow[]>([]);
-  const [activeSession, setActiveSession] = useState<SessionSnapshot | null>(
-    null,
-  );
-  const [studySnapshot, setStudySnapshot] = useState<SessionSnapshot | null>(
-    null,
-  );
   const [showMeaning, setShowMeaning] = useState(false);
   const [showReading, setShowReading] = useState(false);
   const [isReshuffling, setIsReshuffling] = useState(false);
+  const [timerNow, setTimerNow] = useState(Date.now());
+  const [recordModalPreset, setRecordModalPreset] = useState<PresetRow | null>(
+    null,
+  );
 
   const screen = useMemo(() => {
-    if (currentSessionId) {
+    if (currentSessionSnapshot) {
       return "study";
     }
     if (currentLevel) {
       return "presets";
     }
     return "levels";
-  }, [currentLevel, currentSessionId]);
+  }, [currentLevel, currentSessionSnapshot]);
 
   const getStudyProgressLabel = (snapshot: SessionSnapshot) =>
     `${snapshot.session.knownWords}/${snapshot.session.totalWords}`;
 
-  const getPassLabel = (passNo: number) => `${passNo}번째 회독`;
+  const getRoundLabel = (roundNo: number) => `${roundNo}번째 회독`;
+  const getPassLabel = (passNo: number) => `패스 ${passNo}`;
+  const getCompletedRoundLabel = (completedStudyCount: number) =>
+    completedStudyCount > 0
+      ? `${getRoundLabel(completedStudyCount)} 완료`
+      : "아직 회독 전";
+  const formatDuration = (totalSeconds: number) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const paddedMinutes = String(minutes).padStart(hours > 0 ? 2 : 1, "0");
+    const paddedSeconds = String(seconds).padStart(2, "0");
 
-  const refreshHome = async () => {
-    const [nextLevels, nextActiveSession] = await Promise.all([
-      getLevels(db),
-      getActiveSession(db),
-    ]);
-    setLevels(nextLevels);
-    setActiveSession(nextActiveSession);
+    if (hours > 0) {
+      return `${hours}:${String(minutes).padStart(2, "0")}:${paddedSeconds}`;
+    }
+
+    return `${paddedMinutes}:${paddedSeconds}`;
+  };
+  const getRoundRecordLabel = (record: StudyRoundRecord) =>
+    `${record.roundNo}회차 · ${formatDuration(record.elapsedSeconds)}`;
+  const getElapsedSeconds = (session: SessionRow) => {
+    if (!session.timerStartedAt) {
+      return Math.floor(session.elapsedMilliseconds / 1000);
+    }
+
+    const startedAtMs = Date.parse(session.timerStartedAt);
+
+    if (Number.isNaN(startedAtMs)) {
+      return Math.floor(session.elapsedMilliseconds / 1000);
+    }
+
+    return Math.floor(
+      (session.elapsedMilliseconds + Math.max(0, timerNow - startedAtMs)) / 1000,
+    );
   };
 
   useEffect(() => {
     const bootstrap = async () => {
       try {
-        setLoading(true);
-        await refreshHome();
+        setIsBootstrapping(true);
+        const nextLevels = await getLevels(db);
+        setLevels(nextLevels);
+        await syncHomeActiveSessionSummary(db);
       } catch (error) {
         console.error(error);
         Alert.alert("초기화 오류", "앱 데이터를 불러오지 못했습니다.");
       } finally {
-        setLoading(false);
+        setIsBootstrapping(false);
       }
     };
-    bootstrap();
+    void bootstrap();
+  }, [db, syncHomeActiveSessionSummary]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      const store = useAppStore.getState();
+
+      if (!store.currentSessionId) {
+        return;
+      }
+
+      if (nextAppState === "active") {
+        void store.resumeCurrentSessionTimer(db);
+        return;
+      }
+
+      if (nextAppState === "inactive" || nextAppState === "background") {
+        void store.pauseCurrentSessionTimer(db);
+      }
+    });
+    return () => subscription.remove();
   }, [db]);
 
   useEffect(() => {
@@ -95,54 +148,55 @@ function AppShell() {
 
     const loadPresets = async () => {
       try {
-        setLoading(true);
+        setIsPresetLoading(true);
         const rows = await getPresetsByLevel(db, currentLevel);
         setPresets(rows);
       } catch (error) {
         console.error(error);
         Alert.alert("세트 로드 실패", "프리셋 목록을 불러오지 못했습니다.");
       } finally {
-        setLoading(false);
+        setIsPresetLoading(false);
       }
     };
 
-    loadPresets();
+    void loadPresets();
   }, [currentLevel, db, screen]);
 
   useEffect(() => {
-    if (!currentSessionId || screen !== "study") {
+    if (!currentSessionSnapshot) {
       return;
     }
 
-    const loadSession = async () => {
-      try {
-        setLoading(true);
-        const snapshot = await getSessionSnapshot(db, currentSessionId);
-        setStudySnapshot(snapshot);
-        setShowMeaning(false);
-        setShowReading(false);
-      } catch (error) {
-        console.error(error);
-        Alert.alert("세션 로드 실패", "학습 세션을 열지 못했습니다.");
-        setStudySnapshot(null);
-        goPresets();
-      } finally {
-        setLoading(false);
-      }
-    };
+    setShowMeaning(false);
+    setShowReading(false);
+  }, [
+    currentSessionSnapshot?.currentCard.wordId,
+    currentSessionSnapshot?.session.currentPassNo,
+  ]);
 
-    loadSession();
-  }, [currentSessionId, db, screen]);
+  useEffect(() => {
+    const isLiveTimer =
+      screen === "study" && Boolean(currentSessionSnapshot?.session.timerStartedAt);
+
+    if (!isLiveTimer) {
+      return;
+    }
+
+    setTimerNow(Date.now());
+    const timerId = setInterval(() => {
+      setTimerNow(Date.now());
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [
+    screen,
+    currentSessionSnapshot?.session.id,
+    currentSessionSnapshot?.session.timerStartedAt,
+  ]);
 
   const handleStartPreset = async (presetId: number) => {
     try {
-      setLoading(true);
-      const sessionId = await createSessionForPreset(db, presetId);
-      openStudy(sessionId);
-      const snapshot = await getSessionSnapshot(db, sessionId);
-      setStudySnapshot(snapshot);
-      setShowMeaning(false);
-      setShowReading(false);
+      await startPreset(db, presetId);
     } catch (error) {
       console.error(error);
       const message =
@@ -150,46 +204,33 @@ function AppShell() {
           ? "이 세트에는 아직 남아 있는 카드가 없습니다."
           : "세션을 시작하지 못했습니다.";
       Alert.alert("세션 시작 실패", message);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleResume = async () => {
-    if (!activeSession) {
+    if (!homeActiveSessionSummary) {
       return;
     }
+
     try {
-      openStudy(activeSession.session.id);
-      setLoading(true);
-      const snapshot = await getSessionSnapshot(db, activeSession.session.id);
-      setStudySnapshot(snapshot);
-      setShowMeaning(false);
-      setShowReading(false);
+      await resumeActiveSession(db);
     } catch (error) {
       console.error(error);
       Alert.alert("세션 복원 실패", "이어하던 세션을 복원하지 못했습니다.");
-      setStudySnapshot(null);
       goHome();
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleAction = async (action: "study" | "know") => {
-    if (!currentSessionId) {
+    if (!currentSessionSnapshot) {
       return;
     }
 
     try {
-      setLoading(true);
-      const result = await applyQueueAction(db, currentSessionId, action);
+      const result = await handleQueueAction(db, action);
 
       if (result.completed) {
         Alert.alert("회독 완료", "남아 있는 카드가 없습니다.");
-        setStudySnapshot(null);
-        goPresets();
-        await refreshHome();
         return;
       }
 
@@ -199,21 +240,15 @@ function AppShell() {
           setTimeout(resolve, SHUFFLE_TRANSITION_MS),
         );
       }
-
-      const snapshot = await getSessionSnapshot(db, currentSessionId);
-      setStudySnapshot(snapshot);
-      setShowMeaning(false);
-      setShowReading(false);
     } catch (error) {
       console.error(error);
       Alert.alert("학습 처리 실패", "현재 카드를 처리하지 못했습니다.");
     } finally {
       setIsReshuffling(false);
-      setLoading(false);
     }
   };
 
-  if (loading && !levels.length && screen === "levels") {
+  if (isBootstrapping && !levels.length && screen === "levels") {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#0f766e" />
@@ -238,15 +273,16 @@ function AppShell() {
             회독합니다.
           </Text>
 
-          {activeSession ? (
+          {homeActiveSessionSummary ? (
             <View style={styles.panel}>
               <Text style={styles.panelLabel}>이어할 세션</Text>
               <Text style={styles.panelTitle}>
-                {activeSession.session.jlptLevel} {activeSession.preset.label}
+                {homeActiveSessionSummary.presetLabel}
               </Text>
               <Text style={styles.panelBody}>
-                남은 카드 {activeSession.pendingCount}개 ·{" "}
-                {getPassLabel(activeSession.session.currentPassNo)}
+                남은 카드 {homeActiveSessionSummary.pendingCount}개 ·{" "}
+                {getRoundLabel(homeActiveSessionSummary.nextRoundNo)}{" "}
+                진행 중
               </Text>
               <Pressable style={styles.primaryButton} onPress={handleResume}>
                 <Text style={styles.primaryButtonText}>이어하기</Text>
@@ -301,17 +337,37 @@ function AppShell() {
               style={styles.presetCard}
               onPress={() => handleStartPreset(preset.id)}
             >
-              <Text style={styles.presetTitle}>{preset.label}</Text>
-              <Text style={styles.presetMeta}>
-                {preset.roundType.toUpperCase()} · 범위 {preset.rangeStart}-
-                {preset.rangeEnd}
-              </Text>
+              <View style={styles.presetCardRow}>
+                <View style={styles.presetInfo}>
+                  <Text style={styles.presetTitle}>{preset.label}</Text>
+                  <Text style={styles.presetMeta}>
+                    {preset.roundType.toUpperCase()} · 범위 {preset.rangeStart}-
+                    {preset.rangeEnd}
+                  </Text>
+                  <Text style={styles.presetProgress}>
+                    {getCompletedRoundLabel(preset.completedStudyCount)}
+                  </Text>
+                </View>
+
+                <Pressable
+                  style={styles.recordButton}
+                  onPress={(event) => {
+                    event.stopPropagation();
+                    setRecordModalPreset(preset);
+                  }}
+                >
+                  <Text style={styles.recordButtonLabel}>기록</Text>
+                  <Text style={styles.recordButtonValue}>
+                    {preset.roundRecords.length}개
+                  </Text>
+                </Pressable>
+              </View>
             </Pressable>
           ))}
         </ScrollView>
       ) : null}
 
-      {screen === "study" && studySnapshot ? (
+      {screen === "study" && currentSessionSnapshot ? (
         <ScrollView
           style={styles.screen}
           contentContainerStyle={styles.content}
@@ -319,15 +375,12 @@ function AppShell() {
         >
           <View style={styles.headerRow}>
             <Pressable
-              onPress={async () => {
-                goPresets();
-                await refreshHome();
-              }}
+              onPress={() => void leaveStudy(db)}
             >
               <Text style={styles.backButton}>나가기</Text>
             </Pressable>
             <Text style={styles.headerTitle}>
-              {studySnapshot.session.jlptLevel} {studySnapshot.preset.label}
+              {currentSessionSnapshot.preset.label}
             </Text>
             <View style={styles.headerSpacer} />
           </View>
@@ -335,18 +388,33 @@ function AppShell() {
           <View style={styles.progressPanel}>
             <View style={styles.progressHeaderRow}>
               <Text style={styles.progressText}>
-                {getPassLabel(studySnapshot.session.currentPassNo)} 진행 중
+                {getRoundLabel(
+                  currentSessionSnapshot.preset.completedStudyCount + 1,
+                )}{" "}
+                진행 중
               </Text>
               <Text style={styles.progressBadge}>
-                {getStudyProgressLabel(studySnapshot)}
+                {getStudyProgressLabel(currentSessionSnapshot)}
               </Text>
             </View>
+            <Text style={styles.progressSubtext}>
+              현재 {getPassLabel(currentSessionSnapshot.session.currentPassNo)} ·
+              남은 카드 {currentSessionSnapshot.pendingCount}개
+            </Text>
+            <Text style={styles.timerText}>
+              회독 타이머{" "}
+              {formatDuration(
+                getElapsedSeconds(currentSessionSnapshot.session),
+              )}
+            </Text>
           </View>
 
           <View style={styles.studyCard}>
-            <Text style={styles.kanji}>{studySnapshot.currentCard.kanji}</Text>
+            <Text style={styles.kanji}>
+              {currentSessionSnapshot.currentCard.kanji}
+            </Text>
             <Text style={styles.partOfSpeech}>
-              {studySnapshot.currentCard.partOfSpeech ?? "단어"}
+              {currentSessionSnapshot.currentCard.partOfSpeech ?? "단어"}
             </Text>
 
             <View style={styles.revealBox}>
@@ -358,7 +426,7 @@ function AppShell() {
                 ]}
               >
                 {showMeaning
-                  ? studySnapshot.currentCard.meaningKo
+                  ? currentSessionSnapshot.currentCard.meaningKo
                   : "뜻 미리보기"}
               </Text>
             </View>
@@ -372,8 +440,8 @@ function AppShell() {
                 ]}
               >
                 {showReading
-                  ? (studySnapshot.currentCard.readingHiragana ??
-                    studySnapshot.currentCard.kana ??
+                  ? (currentSessionSnapshot.currentCard.readingHiragana ??
+                    currentSessionSnapshot.currentCard.kana ??
                     "-")
                   : "히라가나 미리보기"}
               </Text>
@@ -409,15 +477,15 @@ function AppShell() {
               </Pressable>
             </View>
 
-            {studySnapshot.currentCard.exampleJp ? (
+            {currentSessionSnapshot.currentCard.exampleJp ? (
               <View style={styles.exampleBox}>
                 <Text style={styles.exampleLabel}>예문</Text>
                 <Text style={styles.exampleText}>
-                  {studySnapshot.currentCard.exampleJp}
+                  {currentSessionSnapshot.currentCard.exampleJp}
                 </Text>
-                {studySnapshot.currentCard.exampleKo ? (
+                {currentSessionSnapshot.currentCard.exampleKo ? (
                   <Text style={styles.exampleSubtext}>
-                    {studySnapshot.currentCard.exampleKo}
+                    {currentSessionSnapshot.currentCard.exampleKo}
                   </Text>
                 ) : null}
               </View>
@@ -426,7 +494,9 @@ function AppShell() {
         </ScrollView>
       ) : null}
 
-      {loading && screen !== "levels" && !isReshuffling ? (
+      {(isPresetLoading || isSessionLoading) &&
+      screen !== "levels" &&
+      !isReshuffling ? (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="#0f766e" />
         </View>
@@ -443,6 +513,53 @@ function AppShell() {
           </View>
         </View>
       ) : null}
+
+      <Modal
+        visible={Boolean(recordModalPreset)}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setRecordModalPreset(null)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <View style={styles.modalTitleWrap}>
+                <Text style={styles.modalTitle}>
+                  {recordModalPreset?.label ?? "기록"}
+                </Text>
+                <Text style={styles.modalSubtitle}>회독 시간 기록</Text>
+              </View>
+              <Pressable onPress={() => setRecordModalPreset(null)}>
+                <Text style={styles.modalClose}>닫기</Text>
+              </Pressable>
+            </View>
+
+            <ScrollView
+              style={styles.modalScroll}
+              contentContainerStyle={styles.modalContent}
+            >
+              {recordModalPreset?.roundRecords.length ? (
+                recordModalPreset.roundRecords.map((record) => (
+                  <View key={record.id} style={styles.recordRow}>
+                    <Text style={styles.recordRowTitle}>
+                      {getRoundRecordLabel(record)}
+                    </Text>
+                    <Text style={styles.recordRowMeta}>
+                      완료 {record.completedAt.replace("T", " ").slice(0, 16)}
+                    </Text>
+                  </View>
+                ))
+              ) : (
+                <View style={styles.recordEmptyState}>
+                  <Text style={styles.recordEmptyText}>
+                    아직 완료한 회독 기록이 없습니다.
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -569,6 +686,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 22,
     padding: 20,
+  },
+  presetCardRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  presetInfo: {
+    flex: 1,
     gap: 6,
   },
   presetTitle: {
@@ -578,6 +704,50 @@ const styles = StyleSheet.create({
   },
   presetMeta: {
     color: "#5a706b",
+  },
+  presetProgress: {
+    color: "#0f766e",
+    fontSize: 14,
+    fontWeight: "700",
+    marginTop: 2,
+  },
+  presetRecordPanel: {
+    minWidth: 92,
+    alignItems: "flex-end",
+    gap: 4,
+  },
+  presetRecordLabel: {
+    color: "#6b7f7a",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  presetRecordText: {
+    color: "#12312d",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  presetRecordEmpty: {
+    color: "#8ba09b",
+    fontSize: 13,
+  },
+  recordButton: {
+    minWidth: 74,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    backgroundColor: "#eef7f2",
+    alignItems: "center",
+    gap: 2,
+  },
+  recordButtonLabel: {
+    color: "#0f766e",
+    fontSize: 12,
+    fontWeight: "800",
+  },
+  recordButtonValue: {
+    color: "#12312d",
+    fontSize: 14,
+    fontWeight: "800",
   },
   progressPanel: {
     backgroundColor: "#ffffff",
@@ -608,6 +778,79 @@ const styles = StyleSheet.create({
   },
   progressSubtext: {
     color: "#5a706b",
+    lineHeight: 20,
+  },
+  timerText: {
+    color: "#0f766e",
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(18,49,45,0.28)",
+    justifyContent: "center",
+    padding: 20,
+  },
+  modalCard: {
+    maxHeight: "72%",
+    backgroundColor: "#ffffff",
+    borderRadius: 28,
+    padding: 20,
+    gap: 16,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  modalTitleWrap: {
+    flex: 1,
+    gap: 4,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#12312d",
+  },
+  modalSubtitle: {
+    color: "#5a706b",
+    fontSize: 14,
+  },
+  modalClose: {
+    color: "#0f766e",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  modalScroll: {
+    flexGrow: 0,
+  },
+  modalContent: {
+    gap: 10,
+  },
+  recordRow: {
+    backgroundColor: "#f7faf8",
+    borderRadius: 18,
+    padding: 16,
+    gap: 4,
+  },
+  recordRowTitle: {
+    color: "#12312d",
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  recordRowMeta: {
+    color: "#5a706b",
+    fontSize: 13,
+  },
+  recordEmptyState: {
+    backgroundColor: "#f7faf8",
+    borderRadius: 18,
+    padding: 18,
+  },
+  recordEmptyText: {
+    color: "#5a706b",
+    fontSize: 14,
     lineHeight: 20,
   },
   studyCard: {

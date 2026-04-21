@@ -1,60 +1,180 @@
 # JLPT SQLite Schema
 
-오프라인 우선 React Native 앱 기준 초안이다. 첫 실행 때 전체 콘텐츠를 내려받고, 이후 학습은 SQLite만 읽도록 설계했다.
+현재 앱의 실제 구현 기준 문서다. 이 프로젝트는 지금 시점에서 `N1` 번역 데이터만 포함한 오프라인 우선 Expo 앱이며, 앱 실행 중에는 SQLite만 읽는다.
 
-## 핵심 설계
+## 현재 데이터 흐름
 
-- `words`: 정적 콘텐츠
-- `round_presets`: `0-50`, `0-100`, `0-300`, `300-600`, `0-600` 같은 회독 범위
-- `study_progress`: 단어별 개인 진도
-- `study_sessions`: 회독 세션 단위 기록
-- `session_queue_items`: 세션 안의 현재 큐 순서
-- `custom_wordbooks`, `custom_wordbook_items`: 내 단어장
-- `content_versions`, `app_meta`: 로컬 콘텐츠 버전과 앱 메타데이터
+현재 데이터 적재 방향은 아래 한 가지다.
 
-## 왜 `session_queue_items`가 필요한가
+1. `data/translated/n1.csv`를 수정한다.
+2. `scripts/generate-app-translated-data.mjs`를 실행한다.
+3. `app/src/data/imported.ts`가 다시 생성된다.
+4. 앱 시작 시 `initializeDatabase()`가 `imported.ts`를 SQLite에 넣는다.
 
-회독 큐는 `알고있음`이면 제거, `공부하겠음`이면 뒤로 붙는 구조라서, 단순히 `study_progress`만 저장하면 앱이 종료된 뒤 현재 큐를 복원할 수 없다.  
-그래서 세션마다 현재 큐 순서를 별도 저장해야 한다.
+즉 런타임에서 CSV를 직접 읽지 않는다. 앱이 실제로 읽는 저장소는 로컬 SQLite 파일 `jlpt.db`다.
 
-추가로 이 앱은 한 세트 안에서 모든 카드를 한 번 본 뒤, 아직 남은 모르는 카드만 다시 셔플해서 다음 패스를 시작해야 한다.  
-그래서 `study_sessions.current_pass_no`, `session_queue_items.pass_no`, `session_queue_items.seen_in_pass` 같은 값이 있으면 정확한 복원이 쉬워진다.
+## 현재 앱 범위
 
-중요한 정책은 다음과 같다.
+- 콘텐츠 범위: 현재 포함 데이터는 `N1`만 사용한다.
+- 저장 방식: 단어/프리셋/진도는 모두 로컬 SQLite에 저장한다.
+- 네트워크 의존성: 현재 앱 실행 시 별도 다운로드는 하지 않는다.
+- 단어장 기능: 커스텀 단어장, 서버 manifest, pack 다운로드 흐름은 현재 구현에 없다.
 
-- `study_progress`는 전역 제외 목록이 아니라 기록용이다.
-- 같은 세트를 완료했더라도 다시 들어가면 새 세션으로 다시 공부할 수 있어야 한다.
-- 같은 세트에 진행 중 세션이 있으면 새 세션을 만들지 않고 기존 위치에서 이어야 한다.
+## 현재 사용 테이블
 
-## MVP에 필요한 최소 테이블
+현재 앱 스키마는 아래 다섯 개 테이블을 기준으로 동작한다.
 
+- `content_versions`
+  - 현재 적재된 앱 데이터 버전을 저장한다.
 - `words`
+  - 단어 본문과 예문 같은 정적 콘텐츠를 저장한다.
 - `round_presets`
+  - 학습 세트 범위를 저장한다.
 - `study_progress`
+  - 단어별 학습 결과를 저장한다.
 - `study_sessions`
+  - 세션 단위 진행 상태를 저장한다.
 - `session_queue_items`
+  - 현재 세션의 큐 순서와 회독 상태를 저장한다.
 
-이 다섯 개만 있어도 오프라인 회독 앱은 동작한다.
+실제 SQL은 [app/src/db/schema.ts](/Users/shkim/Desktop/frontend/mine/language_wiki/jlpt/app/src/db/schema.ts)에 있다.
 
-## 확장 시 바로 붙일 것
+## 테이블 역할
 
-- `custom_wordbooks`
-- `custom_wordbook_items`
-- 음성 파일 다운로드 상태를 따로 관리하는 `downloaded_assets`
-- SRS 모드를 붙일 경우 `review_schedules`
+### `content_versions`
 
-## React Native 계층 추천
+- `schema_version`
+  - 스키마 버전
+- `word_pack_version`
+  - 현재 `imported.ts` 기준 데이터 버전
+- `downloaded_at`
+  - 마지막 적재 시각
 
-- `src/db`: SQLite 연결, 마이그레이션, 시드 import
-- `src/repositories`: 단어 조회, 세션 생성, 큐 업데이트
-- `src/services`: 초기 다운로드, 버전 체크, 회독 엔진
-- `src/stores`: Zustand 상태
+이 값이 바뀌면 앱 시작 시 콘텐츠 테이블이 다시 적재된다.
 
-## 초기 다운로드 흐름
+### `words`
 
-1. 앱 실행
-2. `content_versions` 확인
-3. 서버 manifest 확인
-4. word pack 다운로드
-5. SQLite 트랜잭션으로 import
-6. 이후 학습은 로컬 DB만 사용
+- `id`
+  - 앱 내부 단어 ID. 현재는 `n1-1`, `n1-2` 같은 형식이다.
+- `jlpt_level`
+  - 현재 데이터는 실질적으로 `N1`만 들어간다.
+- `sequence_in_level`
+  - 레벨 내 순번
+- `kanji`
+- `kana`
+- `reading_hiragana`
+- `meaning_ko`
+- `part_of_speech`
+- `example_jp`
+- `example_ko`
+- `is_common_life`
+
+현재 CSV에서 품사와 예문은 채우지 않으므로 빈 값으로 들어간다.
+
+### `round_presets`
+
+- `sequence_no`
+  - 프리셋 표시 순서
+- `preset_code`
+  - 내부 식별 코드
+- `label`
+  - UI 표시용 텍스트
+- `round_type`
+  - `micro`, `block`, `merge`
+- `range_start`, `range_end`
+  - `sequence_in_level > range_start AND sequence_in_level <= range_end` 규칙으로 읽는다.
+
+현재 프리셋은 `generate-app-translated-data.mjs`에서 생성하며, 문서상 일반론이 아니라 현재 생성 스크립트의 규칙을 따른다.
+
+### `study_progress`
+
+- `status`
+  - `new`, `learning`, `known`
+- `know_count`
+- `study_count`
+- `wrong_streak`
+- `last_result`
+- `last_seen_at`
+- `known_at`
+- `updated_at`
+
+이 테이블은 전역 제외 목록이 아니라 통계와 최근 상태 기록용이다.
+
+### `study_sessions`
+
+- `id`
+  - 세션 ID
+- `jlpt_level`
+- `preset_id`
+- `source_type`
+  - 현재는 `preset`만 사용
+- `range_start`, `range_end`
+- `current_pass_no`
+- `started_at`, `completed_at`
+- `is_completed`
+- `total_words`
+- `known_words`
+- `study_words`
+
+### `session_queue_items`
+
+- `session_id`
+- `position`
+- `word_id`
+- `state`
+  - `pending`, `known`
+- `pass_no`
+- `seen_in_pass`
+- `cycle_count`
+- `last_action`
+- `updated_at`
+
+이 테이블이 현재 카드 위치와 회독 재시작 순서를 복원하는 핵심이다.
+
+## 현재 초기화 정책
+
+앱 시작 시 [app/src/db/init.ts](/Users/shkim/Desktop/frontend/mine/language_wiki/jlpt/app/src/db/init.ts) 에서 아래 순서로 처리한다.
+
+1. 스키마 SQL을 실행한다.
+2. `content_versions`를 읽는다.
+3. `schema_version` 또는 `word_pack_version`이 다르면 콘텐츠를 리셋한다.
+4. `words`, `round_presets`를 `imported.ts` 기준으로 다시 넣는다.
+5. 새 버전을 `content_versions`에 기록한다.
+
+콘텐츠 리셋 시 아래 테이블이 비워진다.
+
+- `session_queue_items`
+- `study_sessions`
+- `study_progress`
+- `round_presets`
+- `words`
+
+즉 데이터 버전이 바뀌면 학습 진행 상태도 함께 초기화된다.
+
+## 현재 앱 구조
+
+- `app/src/data`
+  - 생성된 import 데이터
+- `app/src/db`
+  - 스키마와 DB 초기화
+- `app/src/features/study`
+  - 회독 큐 엔진
+- `app/src/store`
+  - 화면 전환 상태
+- `app/App.tsx`
+  - 현재 홈, 프리셋, 학습 화면을 모두 포함한 단일 앱 셸
+
+문서상 `repositories`나 `services` 계층은 아직 실제 코드 구조에 반영돼 있지 않다.
+
+## 미구현 또는 제외 범위
+
+아래 항목은 예전 설계 흔적은 남아 있을 수 있지만 현재 앱 정책 문서 기준에서는 구현 범위 밖이다.
+
+- 커스텀 단어장
+- 서버 manifest 확인
+- word pack 다운로드
+- 음성 리소스 관리
+- SRS 스케줄링
+- 멀티 레벨(`N5`~`N2`) 학습 흐름
+
+정책 변경이 생기기 전까지는 이 문서를 현재 구현의 기준으로 본다.

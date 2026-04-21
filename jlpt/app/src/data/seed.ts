@@ -97,12 +97,20 @@ function buildPresetSeeds(words: WordSeed[]): PresetSeed[] {
       previousEnd = nextEnd;
     }
 
+    const hasFullRangePreset = presets.some(
+      (preset) => preset.rangeStart === 0 && preset.rangeEnd === totalCount,
+    );
+
+    if (!hasFullRangePreset) {
+      presets.push(createPreset(level, sequenceNo, "merge", 0, totalCount));
+    }
+
     return presets;
   });
 }
 
 const SAMPLE_PRESET_SEEDS: PresetSeed[] = buildPresetSeeds(SAMPLE_WORD_SEEDS);
-const PRESET_POLICY_VERSION = "preset-policy-v2";
+const PRESET_POLICY_VERSION = "preset-policy-v3";
 
 export const WORD_SEEDS: WordSeed[] =
   IMPORTED_WORD_SEEDS.length > 0 ? IMPORTED_WORD_SEEDS : SAMPLE_WORD_SEEDS;

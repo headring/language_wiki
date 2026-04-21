@@ -64,8 +64,26 @@ CREATE TABLE IF NOT EXISTS study_sessions (
   total_words INTEGER NOT NULL DEFAULT 0,
   known_words INTEGER NOT NULL DEFAULT 0,
   study_words INTEGER NOT NULL DEFAULT 0,
+  elapsed_seconds INTEGER NOT NULL DEFAULT 0,
+  elapsed_milliseconds INTEGER NOT NULL DEFAULT 0,
+  timer_started_at TEXT,
   FOREIGN KEY (preset_id) REFERENCES round_presets(id) ON DELETE SET NULL
 );
+
+CREATE TABLE IF NOT EXISTS study_round_records (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  preset_id INTEGER NOT NULL,
+  session_id TEXT NOT NULL UNIQUE,
+  round_no INTEGER NOT NULL,
+  elapsed_seconds INTEGER NOT NULL DEFAULT 0,
+  elapsed_milliseconds INTEGER NOT NULL DEFAULT 0,
+  completed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (preset_id) REFERENCES round_presets(id) ON DELETE CASCADE,
+  FOREIGN KEY (session_id) REFERENCES study_sessions(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_round_records_preset_round
+  ON study_round_records (preset_id, round_no);
 
 CREATE TABLE IF NOT EXISTS session_queue_items (
   session_id TEXT NOT NULL,

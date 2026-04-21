@@ -7,6 +7,7 @@ import type {
   PresetRow,
   SessionRow,
   SessionSnapshot,
+  StudyRoundRecord,
 } from "../../types/study";
 
 function createSessionId() {
@@ -18,6 +19,89 @@ type QueueItemRow = {
   wordId: string;
   cycleCount: number;
 };
+
+type PresetRowBase = Omit<PresetRow, "roundRecords">;
+
+function diffSeconds(fromIso: string, toIso: string) {
+  const fromMs = Date.parse(fromIso);
+  const toMs = Date.parse(toIso);
+
+  if (Number.isNaN(fromMs) || Number.isNaN(toMs)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.floor((toMs - fromMs) / 1000));
+}
+
+function diffMilliseconds(fromIso: string, toIso: string) {
+  const fromMs = Date.parse(fromIso);
+  const toMs = Date.parse(toIso);
+
+  if (Number.isNaN(fromMs) || Number.isNaN(toMs)) {
+    return 0;
+  }
+
+  return Math.max(0, toMs - fromMs);
+}
+
+function getElapsedSecondsAt(session: SessionRow, nowIso: string) {
+  return Math.floor(getElapsedMillisecondsAt(session, nowIso) / 1000);
+}
+
+function getElapsedMillisecondsAt(session: SessionRow, nowIso: string) {
+  if (!session.timerStartedAt) {
+    return session.elapsedMilliseconds;
+  }
+
+  return session.elapsedMilliseconds + diffMilliseconds(session.timerStartedAt, nowIso);
+}
+
+export async function invalidateSession(
+  db: SQLiteDatabase,
+  sessionId: string,
+) {
+  await db.runAsync(
+    `
+      UPDATE study_sessions
+      SET is_completed = 1, completed_at = CURRENT_TIMESTAMP, timer_started_at = NULL
+      WHERE id = ?
+    `,
+    sessionId,
+  );
+}
+
+async function getRoundRecordsByLevel(
+  db: SQLiteDatabase,
+  level: string,
+): Promise<Map<number, StudyRoundRecord[]>> {
+  const rows = await db.getAllAsync<StudyRoundRecord>(
+    `
+      SELECT
+        srr.id,
+        srr.preset_id as presetId,
+        srr.session_id as sessionId,
+        srr.round_no as roundNo,
+        srr.elapsed_seconds as elapsedSeconds,
+        srr.elapsed_milliseconds as elapsedMilliseconds,
+        srr.completed_at as completedAt
+      FROM study_round_records srr
+      JOIN round_presets rp ON rp.id = srr.preset_id
+      WHERE rp.jlpt_level = ?
+      ORDER BY srr.preset_id ASC, srr.round_no ASC
+    `,
+    level,
+  );
+
+  const grouped = new Map<number, StudyRoundRecord[]>();
+
+  for (const row of rows) {
+    const current = grouped.get(row.presetId) ?? [];
+    current.push(row);
+    grouped.set(row.presetId, current);
+  }
+
+  return grouped;
+}
 
 export async function getLevels(db: SQLiteDatabase): Promise<JlptLevel[]> {
   return db.getAllAsync<JlptLevel>(
@@ -40,7 +124,8 @@ export async function getPresetsByLevel(
   db: SQLiteDatabase,
   level: string,
 ): Promise<PresetRow[]> {
-  return db.getAllAsync<PresetRow>(
+  const [presetRows, roundRecordsByPreset] = await Promise.all([
+    db.getAllAsync<PresetRowBase>(
     `
       SELECT
         id,
@@ -50,13 +135,25 @@ export async function getPresetsByLevel(
         label,
         round_type as roundType,
         range_start as rangeStart,
-        range_end as rangeEnd
+        range_end as rangeEnd,
+        (
+          SELECT COUNT(*)
+          FROM study_round_records srr
+          WHERE srr.preset_id = round_presets.id
+        ) as completedStudyCount
       FROM round_presets
       WHERE jlpt_level = ?
       ORDER BY sequence_no ASC
     `,
-    level,
-  );
+      level,
+    ),
+    getRoundRecordsByLevel(db, level),
+  ]);
+
+  return presetRows.map((preset) => ({
+    ...preset,
+    roundRecords: roundRecordsByPreset.get(preset.id) ?? [],
+  }));
 }
 
 async function getActiveSessionIdForPreset(
@@ -65,10 +162,17 @@ async function getActiveSessionIdForPreset(
 ) {
   const active = await db.getFirstAsync<{ id: string }>(
     `
-      SELECT id
-      FROM study_sessions
-      WHERE preset_id = ? AND is_completed = 0
-      ORDER BY started_at DESC
+      SELECT ss.id
+      FROM study_sessions ss
+      WHERE ss.preset_id = ?
+        AND ss.is_completed = 0
+        AND EXISTS (
+          SELECT 1
+          FROM session_queue_items sqi
+          WHERE sqi.session_id = ss.id
+            AND sqi.state = 'pending'
+        )
+      ORDER BY ss.started_at DESC
       LIMIT 1
     `,
     presetId,
@@ -91,7 +195,12 @@ export async function createSessionForPreset(
         label,
         round_type as roundType,
         range_start as rangeStart,
-        range_end as rangeEnd
+        range_end as rangeEnd,
+        (
+          SELECT COUNT(*)
+          FROM study_round_records srr
+          WHERE srr.preset_id = round_presets.id
+        ) as completedStudyCount
       FROM round_presets
       WHERE id = ?
     `,
@@ -104,7 +213,13 @@ export async function createSessionForPreset(
 
   const existingActiveSessionId = await getActiveSessionIdForPreset(db, presetId);
   if (existingActiveSessionId) {
-    return existingActiveSessionId;
+    try {
+      await normalizeSessionQueue(db, existingActiveSessionId);
+      await getSessionSnapshot(db, existingActiveSessionId);
+      return existingActiveSessionId;
+    } catch {
+      await invalidateSession(db, existingActiveSessionId);
+    }
   }
 
   const candidates = await db.getAllAsync<{ id: string }>(
@@ -175,7 +290,12 @@ async function getPresetBySession(
         rp.label,
         rp.round_type as roundType,
         rp.range_start as rangeStart,
-        rp.range_end as rangeEnd
+        rp.range_end as rangeEnd,
+        (
+          SELECT COUNT(*)
+          FROM study_round_records srr
+          WHERE srr.preset_id = rp.id
+        ) as completedStudyCount
       FROM study_sessions ss
       JOIN round_presets rp ON rp.id = ss.preset_id
       WHERE ss.id = ?
@@ -187,7 +307,10 @@ async function getPresetBySession(
     throw new Error("Preset not found for session");
   }
 
-  return preset;
+  return {
+    ...preset,
+    roundRecords: [],
+  };
 }
 
 async function getSessionRow(
@@ -205,7 +328,11 @@ async function getSessionRow(
         range_end as rangeEnd,
         total_words as totalWords,
         known_words as knownWords,
-        study_words as studyWords
+        study_words as studyWords,
+        is_completed as isCompleted,
+        elapsed_seconds as elapsedSeconds,
+        elapsed_milliseconds as elapsedMilliseconds,
+        timer_started_at as timerStartedAt
       FROM study_sessions
       WHERE id = ?
     `,
@@ -255,6 +382,119 @@ async function getCurrentCardForSession(
   return card;
 }
 
+export async function normalizeSessionQueue(
+  db: SQLiteDatabase,
+  sessionId: string,
+): Promise<void> {
+  const session = await getSessionRow(db, sessionId);
+
+  const pending = await db.getFirstAsync<{ count: number }>(
+    `
+      SELECT COUNT(*) as count
+      FROM session_queue_items
+      WHERE session_id = ?
+        AND state = 'pending'
+    `,
+    sessionId,
+  );
+
+  if ((pending?.count ?? 0) === 0) {
+    throw new Error("SESSION_COMPLETED");
+  }
+
+  const unseenInPass = await db.getFirstAsync<{ count: number }>(
+    `
+      SELECT COUNT(*) as count
+      FROM session_queue_items
+      WHERE session_id = ?
+        AND state = 'pending'
+        AND pass_no = ?
+        AND seen_in_pass = 0
+    `,
+    sessionId,
+    session.currentPassNo,
+  );
+
+  if ((unseenInPass?.count ?? 0) > 0) {
+    return;
+  }
+
+  await db.withExclusiveTransactionAsync(async (txn) => {
+    const latestSession = await getSessionRow(txn, sessionId);
+    const latestUnseen = await txn.getFirstAsync<{ count: number }>(
+      `
+        SELECT COUNT(*) as count
+        FROM session_queue_items
+        WHERE session_id = ?
+          AND state = 'pending'
+          AND pass_no = ?
+          AND seen_in_pass = 0
+      `,
+      sessionId,
+      latestSession.currentPassNo,
+    );
+
+    if ((latestUnseen?.count ?? 0) > 0) {
+      return;
+    }
+
+    const remaining = await txn.getAllAsync<QueueItemRow>(
+      `
+        SELECT position, word_id as wordId, cycle_count as cycleCount
+        FROM session_queue_items
+        WHERE session_id = ?
+          AND state = 'pending'
+      `,
+      sessionId,
+    );
+
+    if (remaining.length === 0) {
+      await txn.runAsync(
+        `
+          UPDATE study_sessions
+          SET is_completed = 1, completed_at = CURRENT_TIMESTAMP, timer_started_at = NULL
+          WHERE id = ?
+        `,
+        sessionId,
+      );
+      return;
+    }
+
+    const reshuffledQueue = shuffleArray(remaining);
+    const nextPassNo = latestSession.currentPassNo + 1;
+
+    await txn.runAsync(
+      "DELETE FROM session_queue_items WHERE session_id = ?",
+      sessionId,
+    );
+
+    for (let index = 0; index < reshuffledQueue.length; index += 1) {
+      await txn.runAsync(
+        `
+          INSERT INTO session_queue_items (
+            session_id, position, word_id, state, pass_no, seen_in_pass, cycle_count
+          ) VALUES (?, ?, ?, 'pending', ?, 0, ?)
+        `,
+        sessionId,
+        index,
+        reshuffledQueue[index].wordId,
+        nextPassNo,
+        reshuffledQueue[index].cycleCount,
+      );
+    }
+
+    await txn.runAsync(
+      `
+        UPDATE study_sessions
+        SET current_pass_no = ?
+        WHERE id = ?
+      `,
+      nextPassNo,
+      sessionId,
+    );
+  });
+}
+
 export async function getSessionSnapshot(
   db: SQLiteDatabase,
   sessionId: string,
@@ -295,14 +535,20 @@ export async function getSessionSnapshot(
   };
 }
 
-export async function getActiveSession(
+export async function getLatestActiveSessionId(
   db: SQLiteDatabase,
-): Promise<SessionSnapshot | null> {
+): Promise<string | null> {
   const session = await db.getFirstAsync<{ id: string }>(
     `
-      SELECT id
-      FROM study_sessions
-      WHERE is_completed = 0
+      SELECT ss.id
+      FROM study_sessions ss
+      WHERE ss.is_completed = 0
+        AND EXISTS (
+          SELECT 1
+          FROM session_queue_items sqi
+          WHERE sqi.session_id = ss.id
+            AND sqi.state = 'pending'
+        )
       ORDER BY started_at DESC
       LIMIT 1
     `,
@@ -312,24 +558,117 @@ export async function getActiveSession(
     return null;
   }
 
-  return getSessionSnapshot(db, session.id);
+  return session.id;
+}
+
+export async function resumeSessionTimer(
+  db: SQLiteDatabase,
+  sessionId: string,
+  startedAt = new Date().toISOString(),
+) {
+  await db.withExclusiveTransactionAsync(async (txn) => {
+    const session = await getSessionRow(txn, sessionId);
+
+    if (session.isCompleted || session.timerStartedAt) {
+      return;
+    }
+
+    await txn.runAsync(
+      `
+        UPDATE study_sessions
+        SET timer_started_at = ?
+        WHERE id = ?
+      `,
+      startedAt,
+      sessionId,
+    );
+  });
+}
+
+export async function pauseSessionTimer(
+  db: SQLiteDatabase,
+  sessionId: string,
+  pausedAt = new Date().toISOString(),
+) {
+  await db.withExclusiveTransactionAsync(async (txn) => {
+    const session = await getSessionRow(txn, sessionId);
+
+    if (session.isCompleted || !session.timerStartedAt) {
+      return;
+    }
+
+    const elapsedMilliseconds = getElapsedMillisecondsAt(session, pausedAt);
+    const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
+
+    await txn.runAsync(
+      `
+        UPDATE study_sessions
+        SET elapsed_seconds = ?, elapsed_milliseconds = ?, timer_started_at = NULL
+        WHERE id = ?
+      `,
+      elapsedSeconds,
+      elapsedMilliseconds,
+      sessionId,
+    );
+  });
 }
 
 type ActionResult = {
   completed: boolean;
   reshuffled: boolean;
+  nextCard: CurrentCard | null;
+  nextPendingCount: number;
+  nextUnseenCount: number;
+  nextSession: Pick<
+    SessionRow,
+    | "currentPassNo"
+    | "knownWords"
+    | "studyWords"
+    | "elapsedSeconds"
+    | "elapsedMilliseconds"
+    | "timerStartedAt"
+  > | null;
 };
 
 export async function applyQueueAction(
   db: SQLiteDatabase,
   sessionId: string,
   action: "study" | "know",
+  actionedAt = new Date().toISOString(),
 ): Promise<ActionResult> {
   let completed = false;
   let reshuffled = false;
+  let nextCard: CurrentCard | null = null;
+  let nextPendingCount = 0;
+  let nextUnseenCount = 0;
+  let nextSession: ActionResult["nextSession"] = null;
 
   await db.withExclusiveTransactionAsync(async (txn) => {
-    const session = await getSessionRow(txn, sessionId);
+    let session = await getSessionRow(txn, sessionId);
+
+    if (session.timerStartedAt) {
+      const elapsedMilliseconds = getElapsedMillisecondsAt(session, actionedAt);
+      const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
+
+      await txn.runAsync(
+        `
+          UPDATE study_sessions
+          SET elapsed_seconds = ?, elapsed_milliseconds = ?, timer_started_at = ?
+          WHERE id = ?
+        `,
+        elapsedSeconds,
+        elapsedMilliseconds,
+        actionedAt,
+        sessionId,
+      );
+
+      session = {
+        ...session,
+        elapsedSeconds,
+        elapsedMilliseconds,
+        timerStartedAt: actionedAt,
+      };
+    }
 
     const currentQueueItem = await txn.getFirstAsync<{
       position: number;
@@ -353,6 +692,28 @@ export async function applyQueueAction(
       completed = true;
       return;
     }
+
+    const countsBeforeAction = await txn.getFirstAsync<{
+      pendingCount: number;
+      unseenCount: number;
+    }>(
+      `
+        SELECT
+          COUNT(CASE WHEN state = 'pending' THEN 1 END) as pendingCount,
+          COUNT(
+            CASE
+              WHEN state = 'pending' AND pass_no = ? AND seen_in_pass = 0 THEN 1
+            END
+          ) as unseenCount
+        FROM session_queue_items
+        WHERE session_id = ?
+      `,
+      session.currentPassNo,
+      sessionId,
+    );
+
+    const pendingBeforeAction = countsBeforeAction?.pendingCount ?? 0;
+    const unseenBeforeAction = countsBeforeAction?.unseenCount ?? 0;
 
     if (action === "study") {
       await txn.runAsync(
@@ -389,6 +750,11 @@ export async function applyQueueAction(
         sessionId,
         currentQueueItem.position,
       );
+
+      session = {
+        ...session,
+        studyWords: session.studyWords + 1,
+      };
     }
 
     if (action === "know") {
@@ -427,44 +793,107 @@ export async function applyQueueAction(
         sessionId,
         currentQueueItem.position,
       );
+
+      session = {
+        ...session,
+        knownWords: session.knownWords + 1,
+      };
     }
 
-    const pending = await txn.getFirstAsync<{ count: number }>(
-      `
-        SELECT COUNT(*) as count
-        FROM session_queue_items
-        WHERE session_id = ? AND state = 'pending'
-      `,
-      sessionId,
-    );
+    nextPendingCount =
+      action === "know" ? pendingBeforeAction - 1 : pendingBeforeAction;
+    nextUnseenCount = Math.max(0, unseenBeforeAction - 1);
 
-    if ((pending?.count ?? 0) === 0) {
+    if (nextPendingCount === 0) {
+      const finalElapsedSeconds = getElapsedSecondsAt(session, actionedAt);
+      const finalElapsedMilliseconds = getElapsedMillisecondsAt(
+        session,
+        actionedAt,
+      );
+      const nextRound = await txn.getFirstAsync<{ count: number }>(
+        `
+          SELECT COUNT(*) as count
+          FROM study_round_records
+          WHERE preset_id = ?
+        `,
+        session.presetId,
+      );
+
       await txn.runAsync(
         `
           UPDATE study_sessions
-          SET is_completed = 1, completed_at = CURRENT_TIMESTAMP
+          SET
+            is_completed = 1,
+            completed_at = CURRENT_TIMESTAMP,
+            elapsed_seconds = ?,
+            elapsed_milliseconds = ?,
+            timer_started_at = NULL
           WHERE id = ?
         `,
+        finalElapsedSeconds,
+        finalElapsedMilliseconds,
         sessionId,
       );
+
+      if (session.presetId) {
+        await txn.runAsync(
+          `
+            INSERT INTO study_round_records (
+              preset_id, session_id, round_no, elapsed_seconds, completed_at
+              , elapsed_milliseconds
+            ) VALUES (?, ?, ?, ?, ?, ?)
+          `,
+          session.presetId,
+          sessionId,
+          (nextRound?.count ?? 0) + 1,
+          finalElapsedSeconds,
+          actionedAt,
+          finalElapsedMilliseconds,
+        );
+      }
+
       completed = true;
       return;
     }
 
-    const unseenInPass = await txn.getFirstAsync<{ count: number }>(
-      `
-        SELECT COUNT(*) as count
-        FROM session_queue_items
-        WHERE session_id = ?
-          AND state = 'pending'
-          AND pass_no = ?
-          AND seen_in_pass = 0
-      `,
-      sessionId,
-      session.currentPassNo,
-    );
+    if (nextUnseenCount > 0) {
+      nextCard = await txn.getFirstAsync<CurrentCard>(
+        `
+          SELECT
+            w.id as wordId,
+            w.kanji,
+            w.kana,
+            w.reading_hiragana as readingHiragana,
+            w.meaning_ko as meaningKo,
+            w.part_of_speech as partOfSpeech,
+            w.example_jp as exampleJp,
+            w.example_ko as exampleKo
+          FROM session_queue_items sqi
+          JOIN words w ON w.id = sqi.word_id
+          WHERE sqi.session_id = ?
+            AND sqi.state = 'pending'
+            AND sqi.pass_no = ?
+            AND sqi.seen_in_pass = 0
+          ORDER BY sqi.position ASC
+          LIMIT 1
+        `,
+        sessionId,
+        session.currentPassNo,
+      );
 
-    if ((unseenInPass?.count ?? 0) > 0) {
+      nextSession = {
+        currentPassNo: session.currentPassNo,
+        knownWords: session.knownWords,
+        studyWords: session.studyWords,
+        elapsedSeconds: session.elapsedSeconds,
+        elapsedMilliseconds: session.elapsedMilliseconds,
+        timerStartedAt: session.timerStartedAt,
+      };
+
+      if (!nextCard) {
+        throw new Error("Current card not found");
+      }
+
       return;
     }
 
@@ -516,5 +945,12 @@ export async function applyQueueAction(
     );
   });
 
-  return { completed, reshuffled };
+  return {
+    completed,
+    reshuffled,
+    nextCard,
+    nextPendingCount,
+    nextUnseenCount,
+    nextSession,
+  };
 }

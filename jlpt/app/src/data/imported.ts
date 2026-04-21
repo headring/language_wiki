@@ -35147,6 +35147,14 @@ function buildPresetSeeds(words: WordSeed[]): PresetSeed[] {
       previousEnd = nextEnd;
     }
 
+    const hasFullRangePreset = presets.some(
+      (preset) => preset.rangeStart === 0 && preset.rangeEnd === totalCount,
+    );
+
+    if (!hasFullRangePreset) {
+      presets.push(createPreset(level, sequenceNo, "merge", 0, totalCount));
+    }
+
     return presets;
   });
 }
