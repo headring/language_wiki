@@ -1,2 +1,0 @@
-{"taskId":"example-N2-0001","kind":"generate-example","sourceId":"N2:n2.csv:1","level":"N2","input":{"expression":"〜 (まる) ごと","reading":"〜 (まる) ごと","meaningKoVariants":["통째로","~ 전체"]},"outputSchema":{"exampleJp":"string","exampleKo":"string","notes":["string"]}}
-

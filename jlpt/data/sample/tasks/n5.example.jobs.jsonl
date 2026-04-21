@@ -1,3 +1,0 @@
-{"taskId":"example-N5-n5-0001","kind":"generate-example","sourceId":"N5:n5.csv:2","level":"N5","input":{"expression":"ああ","reading":"ああ","meaningKoVariants":["아아","아, 오"]},"outputSchema":{"exampleJp":"string","exampleKo":"string","notes":["string"]}}
-{"taskId":"example-N5-n5-0002","kind":"generate-example","sourceId":"N5:n5.csv:3","level":"N5","input":{"expression":"会う","reading":"あう","meaningKoVariants":["만나다","뵙다"]},"outputSchema":{"exampleJp":"string","exampleKo":"string","notes":["string"]}}
-

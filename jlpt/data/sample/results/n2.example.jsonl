@@ -1,2 +1,0 @@
-{"sourceId":"N2:n2.csv:1","taskId":"example-N2-0001","kind":"generate-example","model":"gpt-4.1-mini","apiBase":"https://api.openai.com/v1","exampleJp":"部屋をまるごと掃除する。","exampleKo":"방을 통째로 청소하다.","notes":["sample placeholder"]}
-
