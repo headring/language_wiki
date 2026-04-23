@@ -5,11 +5,11 @@ expression,reading,meaning,tags,guid
 現地,げんち,현지·실제 장소,JLPT_1 JLPT,G$>SwAUY5:
 限定,げんてい,한정·제한,JLPT_1 JLPT,o%F/8(![P3
 原点,げんてん,원점·기점,JLPT_1 JLPT,bXdt~Sz`DP
-原典,げんてん,원전·출처,JLPT_1 JLPT,EB`MVeV|+3
+原典,げん典,원전·출처,JLPT_1 JLPT,EB`MVeV|+3
 原爆,げんばく,원자 폭탄 (원폭),JLPT_1 JLPT,qVu!~xa[nC
 原文,げんぶん,원문,JLPT_1 JLPT,w>egRzs&//
 厳密,げんみつ,엄밀함·정밀함,JLPT_1 JLPT,k<}V}HBo:Y
-賢明,けんめい,현명함·지혜,JLPT_1 JLPT,rF6VPIq@Kt
+賢明,けんめ이,현명함·지혜,JLPT_1 JLPT,rF6VPIq@Kt
 倹約,けんやく,검약·절약,JLPT_1 JLPT,G)qGN7wCPF
 原油,げんゆ,원유,JLPT_1 JLPT,mqzQ4phBV%
 兼用,けんよう,겸용,JLPT_1 JLPT,Q[mY;6;Blm
@@ -22,7 +22,7 @@ expression,reading,meaning,tags,guid
 ～光,～こう,빛,JLPT_1 JLPT,dR[Ye:I0gD
 好意,こうい,호의·친절,JLPT_1 JLPT,f{|~G`MfSc
 行為,こうい,행위·행동,JLPT_1 JLPT,"x,?`vew_Y^"
-合意,ごうい,합의·동의,JLPT_1 JLPT,u5DPHkD^67
+合意,ご우이,합의·동의,JLPT_1 JLPT,u5DPHkD^67
 工学,こうがく,공학,JLPT_1 JLPT,nLBSX>%S~{
 抗議,こうぎ,항의,JLPT_1 JLPT,N%yl^:99*x
 合議,ごうぎ,합의·회의,JLPT_1 JLPT,g]f7CW]TnO
@@ -98,7 +98,7 @@ expression,reading,meaning,tags,guid
 ございます (かん),ございます (かん),있습니다·계십니다,JLPT_1 JLPT,g2<)LlaRj=
 孤児,こじ,고아,JLPT_1 JLPT,Nru>c@<pc2
 こじれる,こじれる,꼬이다·악화되다,JLPT_1 JLPT,jQE(/ITykr
-こす (みずを～),こす (みずを～),거르다·여과하다,JLPT_1 JLPT,P2WNAwMh[2
+こす (みずを～),こす (みず을～),거르다·여과하다,JLPT_1 JLPT,P2WNAwMh[2
 梢,こずえ,나무 꼭대기,JLPT_1 JLPT,"P{..MI,|Mb"
 個性,こせい,개성,JLPT_1 JLPT,EsL6l#sj?m
 戸籍,こせき,호적,JLPT_1 Intermediate_Japanese_Ln.14 JLPT Intermediate_Japanese,JOc{[NV4x8
@@ -106,7 +106,7 @@ expression,reading,meaning,tags,guid
 こたつ,こたつ,코타츠,JLPT_1 JLPT,O}EMl{I]K-
 こだわる,こだわる,구애되다·고집하다,JLPT_1 JLPT,Dw-&[Gy8N`
 誇張,こちょう,과장,JLPT_1 JLPT,c]NsRC|}O%
-こつ (をつかむ),こつ (をつかむ),요령·비결,JLPT_1 JLPT,qPHur}V8b$
+こつ (をつかむ),こつ (을つかむ),요령·비결,JLPT_1 JLPT,qPHur}V8b$
 滑稽,こっけい,익살스러운·우스꽝스러운,JLPT_1 JLPT,v>_m`mFbvz
 国交,こっこう,국교,JLPT_1 JLPT,d-(zI.D]7}
 骨董品,こっとうひん,골동품,JLPT_1 JLPT,Dr0mqScf_b
@@ -174,7 +174,7 @@ expression,reading,meaning,tags,guid
 差額,さがく,차액,JLPT_1 JLPT,gAXt@5CeYh
 杯,さかずき,술잔,JLPT_1 JLPT,QIw#3oSw.:
 逆立ち,さかだち,물구나무서기,JLPT_1 JLPT,ec~&YKW}51
-さきに (いぜん),さきに (いぜん),이전에·앞서,JLPT_1 JLPT,uh`5:/)TWv
+さきに (いぜん),さきに (이ぜん),이전에·앞서,JLPT_1 JLPT,uh`5:/)TWv
 詐欺,さぎ,사기,JLPT_1 JLPT,w6]yB.g{E!
 削減,さくげん,삭감,JLPT_1 JLPT,k7zRyZ_D=o
 錯誤,さくご,착오,JLPT_1 JLPT,IDfkC-Cw&L
@@ -206,9 +206,9 @@ expression,reading,meaning,tags,guid
 様,さま,모양·상태·~님,JLPT_1 JLPT Intermediate_Japanese Intermediate_Japanese_Ln.11,lj0_)hI7Ez
 寒気,さむけ,오한·추위,JLPT_1 JLPT,N#;$qw^KPE
 侍,さむらい,사무라이·무사,JLPT_1 JLPT Intermediate_Japanese_Ln.7 Intermediate_Japanese,g}?p(/xug4
-さも,さも,마치·정말로,JLPT_1 JLPT,Gm-[^5Ln&h
+さも,さ도,마치·정말로,JLPT_1 JLPT,Gm-[^5Ln&h
 作用,さよう,작용,JLPT_1 JLPT,"Oof8u=,|uS"
-さらう (こどもを～),さらう (こどもを～),납치하다·가로채다,JLPT_1 JLPT,B@RtBWjh/W
+さらう (こどもを～),さらう (こども을～),납치하다·가로채다,JLPT_1 JLPT,B@RtBWjh/W
 障る,さわる,방해가 되다·해롭다,JLPT_1 JLPT,Di(J(kaH;V
 酸,さん,산,JLPT_1 JLPT,k/LaLYL|r#
 山岳,さんがく,산악,JLPT_1 JLPT,nJs0S#DzgO
@@ -332,7 +332,7 @@ expression,reading,meaning,tags,guid
 得点,とくてん,득점,JLPT_1 JLPT,"u`t,J1?=>5"
 特派,とくは,특파,JLPT_1 JLPT,HzEPo`9b]p
 特有,とくゆう,특유,JLPT_1 JLPT,s!rvO*5;{%
-とげ (をさす),とげ (をさす),가시,JLPT_1 JLPT,hJ#iZ92?#q
+とげ (をさす),とげ (을さす),가시,JLPT_1 JLPT,hJ#iZ92?#q
 遂げる,とげる,이루다·성취하다,JLPT_1 JLPT,xrXbhn4rr4
 ～どころか,～どころか,~은커녕,JLPT_1 JLPT,EHH{[82H7I
 年頃,としごろ,나이 때·적령기,JLPT_1 JLPT,etGaTJBp9c
@@ -428,9 +428,9 @@ expression,reading,meaning,tags,guid
 なにとぞ,なにとぞ,부디·제발,JLPT_1 JLPT,lQ*Q=lmCB7
 なにより,なにより,무엇보다도,JLPT_1 JLPT,Ifj=x)`!7.
 ナプキン,ナプキン,냅킨,JLPT_1 JLPT,dY;w6ETO=:
-名札,なふだ,명찰,JLPT_1 JLPT,"H,LzU#iC|r"
+名札,나ふだ,명찰,JLPT_1 JLPT,"H,LzU#iC|r"
 生臭い,なまぐさい,비린내 나는,JLPT_1 JLPT,vDPDWlb?&h
-生温い,なまぬるい,미지근한,JLPT_1 JLPT,G~a-u$_3U#
+生温い,나まぬるい,미지근한,JLPT_1 JLPT,G~a-u$_3U#
 生身,なまみ,살아 있는 몸·생신,JLPT_1 JLPT,mdk5@{-d$q
 鉛,なまり,납,JLPT_1 JLPT,clLq6d~d8L
 滑らか,なめらか,매끄러움·유창함,JLPT_1 JLPT,F~B/LW)1su
@@ -447,10 +447,10 @@ expression,reading,meaning,tags,guid
 ナンセンス,ナンセンス,넌센스·무의미함,JLPT_1 JLPT,moW2Xjtt^+
 何だか,なんだか,왠지·어쩐지,JLPT_1 JLPT Intermediate_Japanese Intermediate_Japanese_Ln.11,hYSEqVkL.V
 なんだかんだ,なんだかんだ,이러쿵저러쿵·이것저것,JLPT_1 JLPT,Hjnd-`9LXB
-なんなり,なんなり,무엇이든,JLPT_1 JLPT,w_?<3$dc`X
+なんなり,なんな리,무엇이든,JLPT_1 JLPT,w_?<3$dc`X
 荷,に,짐,JLPT_1 JLPT,yqk%}[]JXT
 似通う,にかよう,서로 닮다,JLPT_1 JLPT,Dm9*/_j8S;
-にきび,にきび,여드름,JLPT_1 JLPT,e&g:V:ku_]
+にきび,에きび,여드름,JLPT_1 JLPT,e&g:V:ku_]
 賑わう,にぎわう,북적이다·활기를 띠다,JLPT_1 JLPT,g#ovh${-3n
 憎しみ,にくしみ,증오·미움,JLPT_1 JLPT,QPkVwq]vjj
 肉親,にくしん,육친·혈육,JLPT_1 JLPT,uWXLxRMJ+O
@@ -483,9 +483,9 @@ expression,reading,meaning,tags,guid
 ネガ,ネガ,네거티브·네가,JLPT_1 JLPT,tRtoeF@*NA
 寝かせる,ねかせる,재우다·눕히다·발효시키다,JLPT_1 JLPT,i8aC;^zTA&
 ねじまわし,ねじまわし,나사돌개·드라이버,JLPT_1 JLPT,lC3$+z.Dp9
-捩れる,ねじれる,비틀리다·뒤틀리다,JLPT_1 JLPT,Shp4gNU#M
+捩れる,네じれる,비틀리다·뒤틀리다,JLPT_1 JLPT,Shp4gNU#M
 妬む,ねたむ,시기하다·질투하다,JLPT_1 JLPT,LkwOsP2luZ
-ねだる,ねだる,조르다,JLPT_1 JLPT,bqJI({hGlV
+ねだる,네だる,조르다,JLPT_1 JLPT,bqJI({hGlV
 熱意,ねつい,열의,JLPT_1 JLPT,rd11dz%oP<
 熱湯,ねっとう,열탕·끓는 물,JLPT_1 JLPT,yBQ@*k[rMd
 熱量,ねつりょう,열량,JLPT_1 JLPT,yVC<gDS.Nb
@@ -572,9 +572,9 @@ expression,reading,meaning,tags,guid
 今更,いまさら,이제 와서·새삼스럽게,JLPT_1 JLPT,hj*29Ug#1R
 未だ,いまだ,아직,JLPT_1 JLPT,p:dli@Jl!z
 移民,いみん,이민,JLPT_1 JLPT,CLJ[Ns`Z6Z
-嫌々,いやいや,마지못해·싫어싫어,JLPT_1 JLPT,QjHKtey?XJ
-卑しい,いやしい,천한·야비한,JLPT_1 JLPT,vBh9gD/$!+
-いやに,いやに,묘하게·지독하게,JLPT_1 JLPT,qpdLL_V*P#
+嫌々,이야이야,마지못해·싫어싫어,JLPT_1 JLPT,QjHKtey?XJ
+卑しい,이야しい,천한·야비한,JLPT_1 JLPT,vBh9gD/$!+
+いやに,이야に,묘하게·지독하게,JLPT_1 JLPT,qpdLL_V*P#
 いやらしい,いやらしい,불쾌한·추잡한,JLPT_1 JLPT,D<T6@Y-YD4
 意欲,いよく,의욕,JLPT_1 JLPT,Fq(`u%{Obm
 威力,いりょく,위력,JLPT_1 JLPT,r5er8dT<)9
@@ -684,7 +684,7 @@ expression,reading,meaning,tags,guid
 遅らす,おくらす,늦추다,JLPT_1 JLPT,BxX=0Td:Ra
 厳か,おごそか,엄숙한,JLPT_1 JLPT,k^}q{Z*:ZU
 行い,おこない,행실·행동,JLPT_1 JLPT,EPt}Y|moZw
-おごる (ゆうしょくを～),おごる (ゆうしょくを～),한턱내다,JLPT_1 JLPT,nplO^(LG?d
+おごる (ゆうしょくを～),おごる (ゆうしょく을～),한턱내다,JLPT_1 JLPT,nplO^(LG?d
 収まる,おさまる,수습되다·거두어지다,JLPT_1 JLPT,blHU8/+m@I
 納まる,おさまる,수납되다·납입되다,JLPT_1 JLPT,cv8FX+R{$0
 治まる,おさまる,가라앉다·다스려지다,JLPT_1 JLPT,vn/~]L;$eG
@@ -796,7 +796,7 @@ expression,reading,meaning,tags,guid
 かかと,かかと,발뒤꿈치,JLPT_1 JLPT,F`djJ$owDP
 書き取る,かきとる,받아쓰다,JLPT_1 JLPT,OeW)s:B>?h
 掻き回す,かきまわす,휘젓다·혼란시키다,JLPT_1 JLPT,"wp9#,9/+Z4"
-かく (はじを),かく (はじを),창피를 당하다,JLPT_1 JLPT,h*j3Yxxcj{
+かく (はじを),かく (はじ을),창피를 당하다,JLPT_1 JLPT,h*j3Yxxcj{
 ～画,～かく,~획,JLPT_1 JLPT,G#l-jHUMTG
 学芸,がくげい,학예,JLPT_1 JLPT,xM-CyLgdV}
 格差,かくさ,격차,JLPT_1 JLPT,zvfu/3%U&J
@@ -812,12 +812,12 @@ expression,reading,meaning,tags,guid
 獲得,かくとく,획득,JLPT_1 JLPT,"B^,*K>>n_|"
 楽譜,がくふ,악보,JLPT_1 JLPT,qMA}9*EjCn
 確保,かくほ,확보,JLPT_1 JLPT,uY<*K%.TG@
-革命,かくめい,혁명,JLPT_1 JLPT,O;mF68dq6Q
+革命,かく메이,혁명,JLPT_1 JLPT,O;mF68dq6Q
 確立,かくりつ,확립,JLPT_1 JLPT,m(/`$&[BF3
 賭,かけ,내기·도박,JLPT_1 JLPT,s:YO~5k/sp
 掛～,かけ～,외상,JLPT_1 JLPT,c#>^nQjhVy
 ～掛け,～かけ,~걸이,JLPT_1 JLPT,"Lr[e?zZ5,<"
-崖,がけ,벼랑·절벽,JLPT_1 JLPT,lH2H25www/
+崖,가け,벼랑·절벽,JLPT_1 JLPT,lH2H25www/
 駆け足,かけあし,구보,JLPT_1 JLPT,Nd5EP#88A|
 家計,かけい,가계,JLPT_1 JLPT,vh}KbR&s=#
 駆けっこ,かけっこ,달리기 시합,JLPT_1 JLPT,"A8,h2([S[A"
@@ -839,7 +839,7 @@ expression,reading,meaning,tags,guid
 片言,かたこと,서툰 말씨,JLPT_1 JLPT Intermediate_Japanese_Ln.13 Intermediate_Japanese,nEkc_9&ki`
 傾ける,かたむける,기울이다,JLPT_1 JLPT,g+aTq;z^TG
 固める,かためる,굳히다·단단히 하다,JLPT_1 JLPT,M}jO{cRWN^
-傍ら,かたわら,곁·옆·~하는 한편,JLPT_1 JLPT,H(u3_23(VR
+傍ら,かたわ라,곁·옆·~하는 한편,JLPT_1 JLPT,H(u3_23(VR
 花壇,かだん,화단,JLPT_1 JLPT,vyDiG-w#Vb
 家畜,かちく,가축,JLPT_1 JLPT,sf(M2A{2zC
 且つ,かつ,게다가·또한,JLPT_1 JLPT,"bxhWiXnmE,"
@@ -923,7 +923,7 @@ expression,reading,meaning,tags,guid
 還暦,かんれき,환갑,JLPT_1 JLPT,4cAN40ulx
 貫禄,かんろく,관록·위엄,JLPT_1 JLPT,I1]lC*Xh&L
 緩和,かんわ,완화,JLPT_1 JLPT,"k^:RZ|u,e@"
-議案,ぎあん,의안,JLPT_1 JLPT,"I,VMbY@&-V"
+議案,ぎ안,의안,JLPT_1 JLPT,"I,VMbY@&-V"
 危害,きがい,위해·위험,JLPT_1 JLPT,F>Z;`xG3Np
 企画,きかく,기획,JLPT_1 Intermediate_Japanese_Ln.14 JLPT Intermediate_Japanese,w*I2LS4{H:
 規格,きかく,규격,JLPT_1 JLPT,"xzs,)in_UO"
@@ -963,7 +963,7 @@ expression,reading,meaning,tags,guid
 きちっと,きちっと,정확하게·반듯하게,JLPT_1 JLPT,D#t!(nebzD
 几帳面,きちょうめん,꼼꼼함·규칙적임,JLPT_1 JLPT,Idj9h;q|%y
 きっかり,きっかり,정확히·딱,JLPT_1 JLPT,cC(nm-eKo^
-きっちり,きっちり,꼭·정확히,JLPT_1 JLPT,p.hrrI+jm1
+きっちり,きっち리,꼭·정확히,JLPT_1 JLPT,p.hrrI+jm1
 きっぱり,きっぱり,단호히·딱 잘라,JLPT_1 JLPT,u>9}K{Kf.I
 規定,きてい,규정,JLPT_1 JLPT,KTPp;1&S1u
 起点,きてん,기점,JLPT_1 JLPT,",M-]_[Vyp"
@@ -1020,7 +1020,7 @@ expression,reading,meaning,tags,guid
 興じる,きょうじる,즐기다·흥겨워하다,JLPT_1 JLPT,"Q;m4!,`BN,"
 強制,きょうせい,강제,JLPT_1 JLPT,Hm$>AvE1~h
 行政,ぎょうせい,행정,JLPT_1 JLPT,r~TWhqKvAt
-業績,ぎょうせき,업적,JLPT_1 JLPT,Lk<<za38cF
+業績,ぎょうせ기,업적,JLPT_1 JLPT,Lk<<za38cF
 共存,きょうぞん,공존,JLPT_1 JLPT,Ij!^n@6%SF
 協定,きょうてい,협정,JLPT_1 JLPT,K9?Jw]OMOi
 郷土,きょうど,향토,JLPT_1 JLPT,Q4`7(5-Vb`
@@ -1040,7 +1040,7 @@ expression,reading,meaning,tags,guid
 許容,きょよう,허용,JLPT_1 JLPT,"m;[9Tjw,qU"
 清らか,きよらか,맑고 깨끗함,JLPT_1 JLPT,rPKJ~vEwnZ
 きらびやか,きらびやか,찬란함·눈부심,JLPT_1 JLPT,t+RU;/m(KM
-～きり,～きり,~만·~뿐,JLPT_1 JLPT,uzRZwLFG-t
+～きり,～き리,~만·~뿐,JLPT_1 JLPT,uzRZwLFG-t
 義理,ぎり,의리,JLPT_1 JLPT,so:x7klic}
 切替,きりかえ,전환·교체,JLPT_1 JLPT,B])<#Pn[DB
 기流,きりゅう,기류,JLPT_1 JLPT,ph[xS7hP4#
@@ -1066,7 +1066,7 @@ expression,reading,meaning,tags,guid
 茎,くき,줄기,JLPT_1 JLPT,O5c;9[C7}%
 区切り,くぎり,매듭·단락,JLPT_1 JLPT,zqK^J|1vVI
 くぐる,くぐる,빠져나가다·잠입하다,JLPT_1 JLPT,"bMchGH<.,G"
-くじ (～をひく),くじ (～をひく),제비뽑기·추첨,JLPT_1 JLPT,ziu-}:42)#
+くじ (～をひく),くじ (을ひく),제비뽑기·추첨,JLPT_1 JLPT,ziu-}:42)#
 くじびき,くじびき,제비뽑기,JLPT_1 JLPT,t-q[>)aB/{
 くすぐったい,くすぐったい,간지럽다,JLPT_1 JLPT,P[CLwgoK#I
 愚痴,ぐち,푸념·불평,JLPT_1 JLPT,C&*!h9}5ae
@@ -1131,7 +1131,7 @@ expression,reading,meaning,tags,guid
 問い合わせる,といあわせる,문의하다·조회하다,JLPT_1 JLPT,uvJB[75Tk}
 当～,とう～,당~ (우리 ~),JLPT_1 JLPT,Mu?thgozeE
 胴,どう,몸통·몸체,JLPT_1 JLPT,hDa8pFJqm0
-同意,どうい,동의·합의,JLPT_1 JLPT,j3r]HMmU>:
+同意,どう이,동의·합의,JLPT_1 JLPT,j3r]HMmU>:
 動員,どういん,동원,JLPT_1 JLPT,k#:gdO(AW5
 同感,どうかん,동감,JLPT_1 JLPT,Bc/Cv&bn2c
 陶器,とうき,도기·도자기,JLPT_1 JLPT,E}elXp_wGW
@@ -1193,7 +1193,7 @@ expression,reading,meaning,tags,guid
 間柄,あいだがら,관계·사이,JLPT JLPT_1,r){:>bdZ&g
 合間,あいま,틈·사이,JLPT JLPT_1,"JUK537Y{:,"
 敢えて,あえて,굳이·감히,JLPT JLPT_1,s1!E#AVJt2
-仰ぐ,あおぐ,우러러보다·우러르다·청하다,JLPT JLPT_1,jM1|yl:^{3
+仰ぐ,아오ぐ,우러러보다·우러르다·청하다,JLPT JLPT_1,jM1|yl:^{3
 垢,あか,때·더러움,JLPT JLPT_1,DBMz)Db=eM
 赤字,あかじ,적자,JLPT JLPT_1,HI03WP|@HB
 明かす,あかす,밝히다·드러내다,JLPT JLPT_1,KwYk}cvf;4
@@ -1203,7 +1203,7 @@ expression,reading,meaning,tags,guid
 アクセル,アクセル,엑셀·가속 페달,JLPT JLPT_1,Ne4X+cGeo>
 あくどい,あくどい,악랄하다·지나치게 화려하다,JLPT JLPT_1,lc&@RDrWR_
 顎,あご,턱,JLPT JLPT_1,Ptm5MS8ifU
-憧れ,あこがれ,동경·그리움,Intermediate_Japanese Intermediate_Japanese_Ln.8 JLPT JLPT_1,xBeDF#=-sz
+憧れ,あこが례,동경·그리움,Intermediate_Japanese Intermediate_Japanese_Ln.8 JLPT JLPT_1,xBeDF#=-sz
 麻,あさ,삼·마,JLPT JLPT_1,w(rcEk/VmK
 あざ,あざ,멍·반점,JLPT JLPT_1,d*;1c9:{uT
 浅ましい,あさましい,한심하다·비열하다,JLPT JLPT_1,s)pIL-ZA22
@@ -1213,7 +1213,7 @@ expression,reading,meaning,tags,guid
 悪しからず,あしからず,나쁘게 생각지 마십시오,JLPT JLPT_1,mzY7to>XD=
 味わい,あじわい,맛·풍미,JLPT JLPT_1,AnF0/M>eGJ
 焦る,あせる,초조해하다·조바심내다,JLPT JLPT_1,CQ6a[yufGz
-あせる (こえが～),あせる (こえが～),바래다·퇴색하다,JLPT JLPT_1,z&GHas=YL$
+あせる (こえが～),あせる (こえ가～),바래다·퇴색하다,JLPT JLPT_1,z&GHas=YL$
 値,あたい,값·가치,JLPT JLPT_1,npzK5/Lv`K
 値する,あたいする,~할 만하다·가치가 있다,JLPT JLPT_1,ft<yLz[qaG
 悪化,あっか,악화,JLPT JLPT_1,sbr2W2n7MW
@@ -1233,7 +1233,7 @@ expression,reading,meaning,tags,guid
 油絵,あぶらえ,유화,JLPT JLPT_1,D+4-`qnb~N
 アプローチ,アプローチ,어프로치·접근,JLPT JLPT_1,jEr0e9w(yl
 あべこ베,あべこべ,거꾸로·반대,JLPT JLPT_1,"H,+X<T.gD6"
-甘える,あまえる,어리광 부리다·응석 부리다,JLPT JLPT_1,Ive+A5(inn
+甘える,あ마える,어리광 부리다·응석 부리다,JLPT JLPT_1,Ive+A5(inn
 雨具,あまぐ,비구·우장·우비,JLPT JLPT_1,I?IUPpQj*?
 甘口,あまくち,단맛·순한 맛,JLPT JLPT_1,RiEI$=-[gq
 アマチュア,アマチュア,아마추어,JLPT JLPT_1,cX1.fT!T=M
@@ -1261,13 +1261,13 @@ expression,reading,meaning,tags,guid
 合わす,あわす,합치다·맞추다,JLPT_1 JLPT,NbeP;-&Q9x
 ～合せ,～あわせ,합계·전부 합해서,JLPT_1 JLPT,txB~izZs$4
 アンコール,アンコール,앙코르,JLPT_1 JLPT,Nor`ur!?#f
-暗殺,あんさつ,암살,JLPT_1 JLPT,k9nuX~0z?!
+暗殺,안さつ,암살,JLPT_1 JLPT,k9nuX~0z?!
 暗算,あんざん,암산,JLPT_1 JLPT,iVkFrF?o$Q
 暗示,あんじ,암시,JLPT_1 JLPT,v]TQH!b:3E
 案じる,あんじる,걱정하다·궁리하다,JLPT_1 JLPT,A+tw-W2up/
 安静,あんせい,안정·정양,JLPT_1 JLPT,m~/57eSA#(
 案의정,あんのじょう,예상대로·아니나 다를까,JLPT_1 JLPT,hA}d;?>d]S
-いい加減,いいかげん,적당히·무책임함·엉터리,JLPT_1 JLPT,m&1q/@m2Fo
+いい加減,いいかげن,적당히·무책임함·엉터리,JLPT_1 JLPT,m&1q/@m2Fo
 言い訳,いいわけ,변명·핑계,JLPT_1 JLPT,bHn3PYYDDh
 イェ스,イェス,예스·네·예수,JLPT_1 JLPT,JNh+4Yr8ef
 家出,いえで,가출,JLPT_1 JLPT,Q=S6%hckV-
@@ -1412,14 +1412,14 @@ expression,reading,meaning,tags,guid
 据える,すえる,놓다·설치하다,JLPT_1 JLPT,t!g&pW29AZ
 すがすがしい,すがすがしい,상쾌하다·시원하다,JLPT_1 JLPT,rK/?@VVUlf
 救い,すくい,구원·도움,JLPT_1 JLPT,qsOm7CX`b8
-すくう (みずを～),すくう (みずを～),(물을) 뜨다·퍼내다,JLPT_1 JLPT,iDqa!wq<Tq
+すくう (みずを～),すくう (みず를～),(물을) 뜨다·퍼내다,JLPT_1 JLPT,iDqa!wq<Tq
 健やか,すこやか,건강한·정정한,JLPT_1 JLPT,"hH9J*t,rc_"
 濯ぐ,すすぐ,헹구다·씻어내다,JLPT_1 JLPT,E0ffUY?7qt
 進み,すすみ,진행·진보,JLPT_1 JLPT,p1:(iOmlNJ
 裾,すそ,자락·옷자락,JLPT_1 JLPT,xF_(AQj}lF
 スタジオ,スタジオ,스튜디오,JLPT_1 JLPT,ic%[^BEKt/
 스팀,スチーム,스팀·증기,JLPT_1 JLPT,nXB;]AdyMC
-スト라이키,ストライキ,파업 (스트라이크),JLPT_1 JLPT,nf-SMH*rKm
+スト라이키,スト라이키,파업 (스트라이크),JLPT_1 JLPT,nf-SMH*rKm
 스트,スト,파업 (스트라이키의 약어),JLPT_1 JLPT,oc==H8k2kf
 스트로,ストロー,빨대·스트로,JLPT_1 JLPT,A.~AmwkH4Z
 스트로보,ストロボ,스트로보·플래시,JLPT_1 JLPT,rNiv+g8N.Q
@@ -1429,7 +1429,7 @@ expression,reading,meaning,tags,guid
 스프링,スプリング,스프링·봄,JLPT_1 JLPT,M&<1|Qyfm^
 스페이스,スペース,스페이스·공간,JLPT_1 JLPT,"mfYc5:,T$)"
 ずぶぬれ,ずぶぬれ,흠뻑 젖음,JLPT_1 JLPT,O=YLrvca-#
-스포츠카,スポーツカー,스포츠카,JLPT_1 JLPT,ILQ_{U)ioI
+스포츠카,스포츠카,스포츠카,JLPT_1 JLPT,ILQ_{U)ioI
 澄ます,すます,맑게 하다·귀를 기울이다,JLPT_1 JLPT,o+[:%ypXAI
 清ます,すます,맑게 하다·귀를 기울이다,JLPT_1 JLPT,gWgE<)O|pN
 済ます,すます,마치다·끝내다·해결하다,JLPT_1 JLPT,BI9b~SlUc1
@@ -1474,7 +1474,7 @@ expression,reading,meaning,tags,guid
 製法,せいほう,제법·만드는 법,JLPT_1 JLPT,r$Viif`6:S
 精密,せいみつ,정밀,JLPT_1 JLPT,k?w!_L!izK
 세무서,ぜいむしょ,세무서,JLPT_1 JLPT,cu&VjhU0YM
-制約,せいやく,제약,JLPT_1 JLPT,eGs}Rjdjyu
+制約,せ이야く,제약,JLPT_1 JLPT,eGs}Rjdjyu
 勢力,せいりょく,세력,JLPT_1 JLPT,jCKk=3Gx//
 整列,せいれつ,정렬,JLPT_1 JLPT,K=?{2[EdLY
 セール,セール,세일·판매,JLPT_1 JLPT,bTb.7j.bY0
@@ -1500,7 +1500,7 @@ expression,reading,meaning,tags,guid
 設立,せつりつ,설립,JLPT_1 JLPT,nV|*LLs6}!
 攻め,せめ,공격,JLPT_1 JLPT,lp+Bg:0JY+
 젤리,ゼリー,젤리,JLPT_1 JLPT,pUMI]4pC]5
-セレモニー,セレモニー,세레모니·의식,JLPT_1 JLPT,ElF~:n|$Dm
+セレモニー,セレ모니,세레모니·의식,JLPT_1 JLPT,ElF~:n|$Dm
 世論,せろん,세론·여론,JLPT_1 JLPT,cn7+uG:k{Q
 先,せん,앞·먼저·우선권,JLPT_1 JLPT,K[s:+C@-V{
 繊維,せんい,섬유,JLPT_1 JLPT,IoI]vI^@?E
@@ -1568,14 +1568,14 @@ expression,reading,meaning,tags,guid
 外方,そっぽ,외면·다른 곳,JLPT_1 JLPT,mx1|xYC`zo
 備え付ける,そなえつける,비치하다·설치하다,JLPT_1 JLPT,?a*256zVd
 備わる,そなわる,갖추어지다,JLPT_1 JLPT,f0#k].O9>M
-具わる,そなわる,갖추어지다,JLPT_1 JLPT,hS*=fc5g`d
+具わる,そ나わる,갖추어지다,JLPT_1 JLPT,hS*=fc5g`d
 聳える,そびえる,우뚝 솟다,JLPT_1 JLPT,N#XbC.4.6E
 素朴,そぼく,소박,JLPT_1 JLPT,i)~;{+Y_4I
 背く,そむく,등지다·어기다,JLPT_1 JLPT,lwG+$Mpa}3
 染まる,そまる,물들다,JLPT_1 JLPT,D^_/a/#sXJ
 染める,そめる,물들이다,JLPT_1 JLPT,"u,7!Dp;dsk"
 そらす,そらす,젖히다·빗나가게 하다,JLPT_1 JLPT,O/=U<S;HO[
-そり (～にのる),そり (～にのる),썰매,JLPT_1 JLPT,oD<qmOFt48
+そり (～にのる),そり (～에のる),썰매,JLPT_1 JLPT,oD<qmOFt48
 反る,そる,휘다,JLPT_1 JLPT,IJaW-#q2K8
 それゆえ,それゆえ,그러므로·그 까닭에,JLPT_1 JLPT,fd1U3Eqd0z
 솔로,ソロ,솔로·독창,JLPT_1 JLPT,r<H?#?:lfS
@@ -1672,7 +1672,7 @@ expression,reading,meaning,tags,guid
 弛む,たるむ,느슨해지다·해이해지다,JLPT_1 JLPT,Q3_&mJpm{q
 垂れる,たれる,늘어지다·드리워지다,JLPT_1 JLPT,"dR~s,A!paY"
 タレント,タレント,탤런트·연예인,JLPT_1 JLPT,lrfU7E]iMP
-タワー,タワー,타워·탑,JLPT_1 JLPT,v5:z0AFR9T
+タワー,타ワー,타워·탑,JLPT_1 JLPT,v5:z0AFR9T
 単一,たんいつ,단일,JLPT_1 JLPT,h$`k(ir0Rg
 短歌,たんか,단가 (31음 절 시),JLPT_1 JLPT,Ir#MY^13Ie
 担架,たんか,들것,JLPT_1 JLPT,HV+tZ)Qo19
@@ -1705,7 +1705,7 @@ expression,reading,meaning,tags,guid
 縮まる,ちぢまる,줄어들다·단축되다,JLPT_1 JLPT,wu7wbA:9_;
 秩序,ちつじょ,질서,JLPT_1 JLPT Intermediate_Japanese_Ln.10 Intermediate_Japanese,P)jMU1FkFO
 窒息,ちっそく,질식,JLPT_1 JLPT,fDBko;}]D
-知的,ちてき,지적임·지적인,JLPT_1 JLPT,jiAkN.}ZmV
+知的,ちて기,지적임·지적인,JLPT_1 JLPT,jiAkN.}ZmV
 着手,ちゃくしゅ,착수,JLPT_1 JLPT,F[_a*7LJN.
 着色,ちゃくしょく,착색,JLPT_1 JLPT,N#Q=xWnJKS
 着席,ちゃくせき,착석,JLPT_1 JLPT,MeN__AKyp|
@@ -1780,7 +1780,7 @@ expression,reading,meaning,tags,guid
 繕う,つくろう,수선하다·겉치레하다,JLPT_1 JLPT,rVgUbJ=*17
 付け加える,つけくわえる,덧붙이다,JLPT_1 JLPT,G(BFo.4q2m
 告げる,つげる,알리다·고하다,JLPT_1 JLPT,<m$M~A%1_
-つじつま (はなしの～),つじつま (はなしの～),조리·앞뒤가 맞음,JLPT_1 JLPT,jvc[~0R.1u
+つじつま (はなしの～),つじつま (はなし의～),조리·앞뒤가 맞음,JLPT_1 JLPT,jvc[~0R.1u
 筒,つつ,통·원통,JLPT_1 JLPT,w^XrZ[jgo`
 突く,つつく,찌르다·툭툭 치다,JLPT_1 JLPT,B*u&&$(Hd.
 突っ突く,つっつく,쿡쿡 찌르다·자극하다,JLPT_1 JLPT,"p5=i4N,JuA"
@@ -1796,14 +1796,14 @@ expression,reading,meaning,tags,guid
 唾,つば,침,JLPT_1 JLPT,BsP8}KfBI.
 呟く,つぶやく,중얼거리다,JLPT_1 JLPT,ug.@5E|3HH
 つぶら,つぶら,둥글둥글한,JLPT_1 JLPT,ef4-=?4kR%
-つぶる (めを～),つぶる (めを～),(눈을) 감다,JLPT_1 JLPT,ndE`WwYDbY
+つぶる (めを～),つぶる (め을～),(눈을) 감다,JLPT_1 JLPT,ndE`WwYDbY
 壺,つぼ,항아리·단지,JLPT_1 JLPT,C3S8JvZPeU
 蕾,つぼみ,꽃봉오리,JLPT_1 JLPT,"QMJ,;+-HP?"
 連なる,つらなる,줄지어 있다·연하다,JLPT_1 JLPT,mp~Cp%LGWd
 貫く,つらぬく,관통하다·일관하다,JLPT_1 JLPT,j32^3)_a~A
 連ねる,つらねる,줄지어 놓다·나열하다,JLPT_1 JLPT,"f,+4Zn,xV["
 釣り鐘,つりがね,범종·종,JLPT_1 JLPT,NCQt3~fkfu
-吊り革,つりかわ,(버스 등의) 손잡이,JLPT_1 JLPT,djH0o!(*c9
+吊り革,つ리かわ,(버스 등의) 손잡이,JLPT_1 JLPT,djH0o!(*c9
 手当,てあて,수당·처치,JLPT_1 JLPT,"re,MYOrC&P"
 定義,ていぎ,정의,JLPT_1 JLPT,Ju;[Z@>(rL
 提供,ていきょう,제공,JLPT_1 JLPT,nfoi|;u&u/
@@ -1820,7 +1820,7 @@ expression,reading,meaning,tags,guid
 手遅れ,ておくれ,때를 놓침,JLPT_1 JLPT,nekju?5ubj
 でかい,でかい,크다·커다랗다,JLPT_1 JLPT,Jx@s8-_D#U
 手掛かり,てがかり,단서·실마리,JLPT_1 JLPT,tv6_fmP+C^
-手掛ける,てがける,직접 다루다·돌보다,JLPT_1 JLPT,b`U6.}VMxH
+手掛ける,て가ける,직접 다루다·돌보다,JLPT_1 JLPT,b`U6.}VMxH
 手数,てかず,수고·번거로움,JLPT_1 JLPT,JN-JN1T)fO
 手軽,てがる,손쉬움·간편함,JLPT_1 JLPT,O$[ge5&iL_
 適応,てきおう,적응,JLPT_1 JLPT,qk3tIV:T3#
@@ -1832,7 +1832,7 @@ expression,reading,meaning,tags,guid
 手順,てじゅん,순서·절차,JLPT_1 JLPT Intermediate_Japanese_Ln.12 Intermediate_Japanese,c1%awvoN<G
 手錠,てじょう,수갑,JLPT_1 JLPT,M]H9j1Gt/U
 手数,てすう,수고·번거로움,JLPT_1 JLPT,f]Aus5bfMZ
-デ코レーション,デコレーション,장식,JLPT_1 JLPT,K-]Gk*htnp
+デ코レーション,데코レーション,장식,JLPT_1 JLPT,K-]Gk*htnp
 手近,てぢか,가까움·곁,JLPT_1 JLPT,I~^!M@4Nmr
 てっきり,てっきり,틀림없이·분명히,JLPT_1 JLPT,K?Vg%~I#2j
 鉄鋼,てっこう,철강,JLPT_1 JLPT,rVT@BH(A<O
@@ -1848,7 +1848,7 @@ expression,reading,meaning,tags,guid
 手本,てほん,본보기·모델,JLPT_1 JLPT,"t|h[1W,pPs"
 手回し,てまわし,준비·채비,JLPT_1 JLPT,dy-/j^Gui]
 手元,てもと,손품·가까이 있음,JLPT_1 JLPT,tu&}1&?g%w
-デモンストレーション,デモンストレーション,데몬스트레이션·시위,JLPT_1 JLPT,I55gT%~:[j
+デモンストレーション,デモン스트レーション,데몬스트레이션·시위,JLPT_1 JLPT,I55gT%~:[j
 照り返す,てりかえす,반사하다,JLPT_1 JLPT,kIkT2-(*J3
 テレックス,テレックス,텔렉스,JLPT_1 JLPT,v1+D>d&5H.
 手分け,てわけ,분담,JLPT_1 JLPT,m#VeALIb8e
@@ -1875,7 +1875,7 @@ expression,reading,meaning,tags,guid
 露骨,ろこつ,노골적임,JLPT_1 JLPT,okKA1R-|_f
 ロマンチック,ロマンチック,로맨틱·낭만적,JLPT_1 JLPT,M?mRP8})iJ
 論議,ろんぎ,논의,JLPT_1 JLPT,c_VVnx7{Qw
-論理,ろんり,논리,JLPT_1 JLPT,L6>bmEs.Go
+論理,ろん리,논리,JLPT_1 JLPT,L6>bmEs.Go
 惑星,わくせい,행성,JLPT_1 JLPT,i(EF_1YXl@
 技,わざ,기술·기예,JLPT_1 JLPT,BM:PE.Zf/W
 わざわざ,わざわざ,일부러·특별히,JLPT_1 JLPT Intermediate_Japanese_Ln.9 Intermediate_Japanese,t+s8u__g5@
@@ -1900,7 +1900,7 @@ expression,reading,meaning,tags,guid
 白状,はくじょう,자백·고백,JLPT_1 JLPT,J/Jj0`N>b{
 漠然,ばくぜん,막연함·모호함,JLPT_1 JLPT,z<3ukk)iX!
 爆弾,ばくだん,폭탄,JLPT_1 JLPT,qYU+(QByX-
-爆破,ばくは,폭파,JLPT_1 JLPT,"m),XrBltSD"
+爆破,바쿠하,폭파,JLPT_1 JLPT,"m),XrBltSD"
 暴露,ばくろ,폭로,JLPT_1 JLPT,i/U;Q_t$DD
 励ます,はげます,격려하다·북돋우다,JLPT_1 JLPT Intermediate_Japanese_Ln.13 Intermediate_Japanese,Ov]Au<DThv
 励む,はげむ,힘쓰다·노력하다,JLPT_1 JLPT,eRMmv1gB8h
@@ -1952,7 +1952,7 @@ expression,reading,meaning,tags,guid
 淑やか,しとやか,아담함·우아함,JLPT_1 JLPT,cs-RRQGVDP
 萎びる,しなびる,시들다·쭈글쭈글해지다,JLPT_1 JLPT,n39PUN5yKB
 シナリオ,シナリオ,시나리오,JLPT_1 JLPT,mcEC.#phJ/
-しなやか,しなやか,탄력 있는·부드러운,JLPT_1 JLPT,"llcgEUgd,}"
+しなやか,し나やか,탄력 있는·부드러운,JLPT_1 JLPT,"llcgEUgd,}"
 屎尿,しにょう,분뇨,JLPT_1 JLPT,L{NJwSJvE1
 地主,じぬし,지주·땅주인,JLPT_1 JLPT,P7lP?kfIYU
 凌ぐ,しのぐ,능가하다·견뎌내다,JLPT_1 JLPT,G74MSKaZvn
@@ -2043,7 +2043,7 @@ expression,reading,meaning,tags,guid
 ヒント,ヒント,힌트,JLPT_1 JLPT,l]_+v%b&%R
 頻繁,ひんぱん,빈번함,JLPT_1 JLPT,D{nW!<u7<*
 貧乏,びんぼう,가난,JLPT_1 JLPT,KjBzaYHZW.
-ファ이트,ファイト,파이트·투지,JLPT_1 JLPT,"C?{V+<,&x0"
+ファ이트,ファ이트,파이트·투지,JLPT_1 JLPT,"C?{V+<,&x0"
 ファイル,ファイル,파일,JLPT_1 Genki_Ln.16 JLPT Genki,srC<dgokBJ
 ファン,ファン,팬,JLPT_1 JLPT,hsy0ORScG&
 不意,ふい,불의·갑작스러움,JLPT_1 JLPT,xgYlO*O}d~
@@ -2067,14 +2067,14 @@ expression,reading,meaning,tags,guid
 福祉,ふくし,복지,JLPT_1 JLPT,b03!@u1#5V
 覆面,ふくめん,복면,JLPT_1 JLPT,QXg#lB9xS_
 膨れる,ふくれる,부풀다·불룩해지다,JLPT_1 JLPT,"Ie:O+1U,1j"
-不景気,ふけいき,불경기,JLPT_1 JLPT,"iNdMUnu]F,"
+不景気,불황,불경기,JLPT_1 JLPT,"iNdMUnu]F,"
 耽る,ふける,빠지다·몰두하다,JLPT_1 JLPT,v[B)O.T7PD
 老ける,ふける,나이 먹다·늙다,JLPT_1 JLPT,QZ$)s`u+7V
 富豪,ふごう,부호·부자,JLPT_1 JLPT,de)G:rS8ob
 布告,ふこく,포고,JLPT_1 JLPT,m`EP77(8*G
 ブザー,ブザー,부저,JLPT_1 JLPT,C0kjm{<IuS
 負債,ふさい,부채·빚,JLPT_1 JLPT,qG<ySRudYV
-不在,ふざい,부재,JLPT_1 JLPT,rCM+ktTr!?
+不在,ふざ이,부재,JLPT_1 JLPT,rCM+ktTr!?
 ふさわしい,ふさわしい,어울리다·적합하다,JLPT_1 JLPT,j1c*Q9d`L}
 不順,ふじゅん,불순함,JLPT_1 JLPT,kwTZda>KFz
 負傷,ふしょう,부상,JLPT_1 JLPT,o+oZbWGZ`o
@@ -2106,7 +2106,7 @@ expression,reading,meaning,tags,guid
 不明,ふめい,불명,JLPT_1 JLPT,c[|*N}]Ng.
 部門,ぶもん,부문,JLPT_1 JLPT,fW<r$/Xexi
 扶養,ふよう,부양,JLPT_1 JLPT,c&|r4tzL6g
-ふらふら,ふらふら,비틀비틀·갈팡질팡,JLPT_1 JLPT,cGi)S~zu?F
+ふらふら,ふらふ라,비틀비틀·갈팡질팡,JLPT_1 JLPT,cGi)S~zu?F
 ぶらぶら,ぶらぶら,빈둥빈둥·어슬렁어슬렁,JLPT_1 JLPT,"cSlQ|q,LD<"
 振り返る,ふりかえる,뒤돌아보다,JLPT_1 JLPT,i6Y*X-6gv)
 振り出し,ふりだし,출발점·(어음) 발행,JLPT_1 JLPT,"A2?E7UEb&,"
@@ -2280,7 +2280,7 @@ expression,reading,meaning,tags,guid
 まして,まして,하물며·더구나,JLPT_1 JLPT,PY/0T[blt;
 交わる,まじわる,교차하다·사귀다,JLPT_1 JLPT,mS|?u$Z<><
 麻酔,ますい,마취,JLPT_1 JLPT,"mw>M%F[]D,"
-またがる (うまを～),またがる (うまを～),올라타다·걸치다,JLPT_1 JLPT,uN3HnTL61M
+またがる (うまを～),またがる (うま를～),올라타다·걸치다,JLPT_1 JLPT,uN3HnTL61M
 待ち合わせ,まちあわせ,약속(해서 만나기로 함),JLPT_1 JLPT,IyY!Ll1/sj
 待ち遠しい,まちどおしい,몹시 기다려지다,JLPT_1 JLPT,w+0{4=a9>3
 待ち望む,まちのぞむ,간절히 기다리다,JLPT_1 JLPT,CwJO9mIIMV
@@ -2386,14 +2386,14 @@ expression,reading,meaning,tags,guid
 命中,めいちゅう,명중,JLPT_1 JLPT,Qq0/BP{lJ:
 明白,めいはく,명백,JLPT_1 JLPT,g|K4[<><hX
 名簿,めいぼ,명부,JLPT_1 JLPT,xkhYhi]K-$
-名誉,めいよ,명예,JLPT_1 JLPT,PiLIi1%_ER
+名誉,메이요,명예,JLPT_1 JLPT,PiLIi1%_ER
 明瞭,めいりょう,명료,JLPT_1 JLPT,"s[dks,f=+A"
 明朗,めいろう,명랑,JLPT_1 JLPT,Kzdx<dR.%]
 メーカー,メーカー,제조사·메이커,JLPT_1 JLPT,r)Eust:VuL
 目方,めかた,무게·중량,JLPT_1 JLPT,"unS}*nsB,_"
 恵み,めぐみ,은혜·축복,JLPT_1 JLPT,gdikXkV`X<
 恵む,めぐむ,베풀다,JLPT_1 JLPT,u_D+Zdxyy/
-目覚しい,めざましい,눈부시다·괄목할 만하다,JLPT_1 JLPT,"z8UKuy,l`d"
+目覚しい,메ざましい,눈부시다·괄목할 만하다,JLPT_1 JLPT,"z8UKuy,l`d"
 目覚める,めざめる,잠에서 깨다·깨닫다,JLPT_1 JLPT,~I1tdEiJ_
 召す,めす,드시다·입으시다(존경어),JLPT_1 JLPT,K%!n2|&<A0
 雌,めす,암컷,JLPT_1 JLPT,EW)C>Dc!w6
@@ -2624,7 +2624,7 @@ expression,reading,meaning,tags,guid
 ハンガー,ハンガー,옷걸이·행거,JLPT_1 JLPT,HNMn){L;p@
 反感,はんかん,반감,JLPT_1 JLPT,KAT#$^~N=[
 反響,はんきょう,반향,JLPT_1 JLPT,(!Sbp/Ryc
-パンク,パンク,펑크,JLPT_1 JLPT,LzYO%D<&Ei
+パンク,パン크,펑크,JLPT_1 JLPT,LzYO%D<&Ei
 反撃,はんげき,반격,JLPT_1 JLPT,BBy/kmWv|!
 判決,はんけつ,판결,JLPT_1 JLPT,K@f^#cZ5Q`
 反射,はんしゃ,반사,JLPT_1 JLPT,LDqIUH^=vr
@@ -2642,7 +2642,7 @@ expression,reading,meaning,tags,guid
 氾濫,はんらん,범람,JLPT_1 JLPT,"Im~yS%,7(E"
 美,び,미·아름다움,JLPT_1 JLPT,Oi9jkr_JC
 ひいては,ひいては,나아가서는·결과적으로,JLPT_1 JLPT,jOz98=%a=I
-ビールス,ビールス,바이러스,JLPT_1 JLPT,k4c<|hYsN{
+ビールス,ビール스,바이러스,JLPT_1 JLPT,k4c<|hYsN{
 控室,ひかえしつ,대기실,JLPT_1 JLPT,y&_T~x>Y8R
 控える,ひかえる,삼가다·대기하다·메모하다,JLPT_1 JLPT,v:A0($lqMw
 悲観,ひかん,비관,JLPT_1 JLPT,b5j5UZJ)]S
@@ -2677,7 +2677,7 @@ expression,reading,meaning,tags,guid
 人気,ひとけ,인기척,JLPT_1 JLPT,NG2)}0vQ0h
 一頃,ひところ,한때,JLPT_1 JLPT,g6jcX?>0?e
 人質,ひとじち,인질,JLPT_1 JLPT,zJcHfH}ajC
-一筋,ひとすじ,한 줄기·일편단심,JLPT_1 JLPT,Iw`AaG(p-#
+一筋,ひとす지,한 줄기·일편단심,JLPT_1 JLPT,Iw`AaG(p-#
 人目,ひとめ,사람들의 눈·남의 이목,JLPT_1 JLPT,I=B$#9HzY_
 日取り,ひどり,날짜를 정함,JLPT_1 JLPT,"E,%=}b)+ea"
 雛,ひな,병아리·인형,JLPT_1 JLPT,x|ru;#K_h[
@@ -2687,7 +2687,7 @@ expression,reading,meaning,tags,guid
 避難,ひなん,피난,JLPT_1 JLPT,L:}JI$`!GO
 日の丸,ひのまる,일장기,JLPT_1 JLPT,t9<.]@%ayT
 火花,ひばな,불꽃,JLPT_1 JLPT,um|5.IJ}3z
-ひび (かべの～),ひび (かべの～),금·균열,JLPT_1 JLPT,"y]|C%f,K4~"
+ひび (かべの～),ひび (かべ의～),금·균열,JLPT_1 JLPT,"y]|C%f,K4~"
 悲鳴,ひめい,비명,JLPT_1 JLPT,"iBM$!,wWJ6"
 冷やかす,ひやかす,놀리다·구경만 하고 사지 않다,JLPT_1 JLPT,g|eu{@|Ra<
 日焼け,ひやけ,햇볕에 탐,JLPT_1 JLPT,B*x^zGN+6l
