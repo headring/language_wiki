@@ -1,4 +1,4 @@
-expression,reading,meaning,tags,guid
+﻿expression,reading,meaning,tags,guid
 現像,げんぞう,필름 현상,JLPT_1 JLPT,v9bha+<cj}
 原則,げんそく,원칙,JLPT_1 JLPT,dVC[`t${#`
 見地,けんち,견지·관점,JLPT_1 JLPT,wk)a!>hpi:
@@ -98,7 +98,7 @@ expression,reading,meaning,tags,guid
 ございます (かん),ございます (かん),있습니다·계십니다,JLPT_1 JLPT,g2<)LlaRj=
 孤児,こじ,고아,JLPT_1 JLPT,Nru>c@<pc2
 こじれる,こじれる,꼬이다·악화되다,JLPT_1 JLPT,jQE(/ITykr
-こす (みずを～),こす (みずを～),거르다·여과하다,JLPT_1 JLPT,P2WNAwMh[2
+漉す·濾す (みずを～),こす (みずを～),거르다·여과하다,JLPT_1 JLPT,P2WNAwMh[2
 梢,こずえ,나무 꼭대기,JLPT_1 JLPT,"P{..MI,|Mb"
 個性,こせい,개성,JLPT_1 JLPT,EsL6l#sj?m
 戸籍,こせき,호적,JLPT_1 Intermediate_Japanese_Ln.14 JLPT Intermediate_Japanese,JOc{[NV4x8
@@ -163,7 +163,7 @@ expression,reading,meaning,tags,guid
 最善,さいぜん,최선,JLPT_1 JLPT,M-1H]L<~pq
 採択,さいたく,채택,JLPT_1 JLPT,e+cLZEXhDr
 栽培,さいばい,재배,JLPT_1 JLPT,uC68c<~cH)
-再발,さいはつ,재발,JLPT_1 JLPT,CS^Rshk:|8
+再発,さいはつ,재발,JLPT_1 JLPT,CS^Rshk:|8
 細胞,さいぼう,세포,JLPT_1 JLPT,CzyHns{dm!
 採用,さいよう,채용,JLPT_1 JLPT,"vMLF5(iO,d"
 遮る,さえぎる,가로막다·차단하다,JLPT_1 JLPT,QMaal]q?M$
@@ -201,7 +201,7 @@ expression,reading,meaning,tags,guid
 悟る,さとる,깨닫다,JLPT_1 JLPT,v:Q4euCfA7
 最中,さなか,한창·한중간,JLPT_1 JLPT,A!j+&nF3Wn
 座標,ざひょう,좌표,JLPT_1 JLPT,B0L0!.A0?}
-さほど,さほど,그리·별로,JLPT_1 JLPT,Eqh)/a:JaN
+然程,さほど,그리·별로,JLPT_1 JLPT,Eqh)/a:JaN
 サボる,サボる,땡땡이치다·게으름 피우다,JLPT Genki_Ln.11 Intermediate_Japanese JLPT_1 Intermediate_Japanese_Ln.13 Genki,AVLvOaz~KF
 様,さま,모양·상태·~님,JLPT_1 JLPT Intermediate_Japanese Intermediate_Japanese_Ln.11,lj0_)hI7Ez
 寒気,さむけ,오한·추위,JLPT_1 JLPT,N#;$qw^KPE
@@ -244,15 +244,15 @@ expression,reading,meaning,tags,guid
 自覚,じかく,자각,JLPT_1 JLPT,i/]v!LT[`[
 仕掛,しかけ,장치·구조,JLPT_1 JLPT,Jsems8J4`^
 仕掛ける,しかける,걸다·시작하다·장치하다,JLPT_1 JLPT,Ac40<_hm$3
-그러나ながら,しかしながら,그렇지만·하지만,JLPT_1 JLPT,Hq^C6[L3R8
+併し乍ら,しかしながら,그렇지만·하지만,JLPT_1 JLPT,Hq^C6[L3R8
 色彩,しきさい,색채,JLPT_1 JLPT,G$Z8Bsx{4U
 式場,しきじょう,식장,JLPT_1 JLPT,rHP.1FI!Xg
-しきたり,しきたり,관습·관례,JLPT_1 JLPT,sw_]y<P?Kn
+仕来り・為来り,しきたり,관습·관례,JLPT_1 JLPT,sw_]y<P?Kn
 事業,じぎょう,사업,JLPT_1 JLPT,A#sQ/bEEtj
 軽蔑,けいべつ,경멸,JLPT_1 JLPT,"lOS,!wvUe["
 経歴,けいれき,경력,JLPT_1 JLPT,D*n(@DRyq`
 経路,けいろ,경로,JLPT_1 JLPT,AQ(D;C-S!0
-けがらわしい,けがらわしい,추잡한·불결한,JLPT_1 JLPT,lJNQ&9#g@p
+汚らわしい-穢らわしい,けがらわしい,추잡한·불결한,JLPT_1 JLPT,lJNQ&9#g@p
 劇団,げきだん,극단,JLPT_1 JLPT,%y17:4{hj
 激励,げきれい,격려,JLPT_1 JLPT,C6/gh1N08I
 ゲスト,ゲスト,게스트·손님,JLPT_1 JLPT,lW>d7fCUoL
@@ -296,7 +296,7 @@ expression,reading,meaning,tags,guid
 元素,げんそ,원소,JLPT_1 JLPT,B2tvGhK[&9
 同調,どうちょう,동조·찬성,JLPT_1 JLPT,n#0+>4}sN5
 到底,とうてい,도저히·도대체,JLPT_1 JLPT,C.#O<.PWZ+
-動적,どうてき,동적인,JLPT_1 JLPT,k^9j&Q>>|N
+動的,どうてき,동적인,JLPT_1 JLPT,k^9j&Q>>|N
 尊い,とうとい,귀중한·존귀한,JLPT_1 JLPT,o/:X}@s/ud
 貴い,とうとい,귀중한·존귀한,JLPT_1 JLPT,uE?!53}hB@
 同等,どうとう,동등,JLPT_1 JLPT,sS(wNIrQN<

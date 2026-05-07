@@ -1,6 +1,6 @@
 import type { PresetSeed, WordSeed } from "../types/study";
 
-export const IMPORTED_DATA_VERSION = "translated-2026-04-23T00:34:46.320Z";
+export const IMPORTED_DATA_VERSION = "translated-2026-05-07T02:37:41.174Z";
 
 export const IMPORTED_WORD_SEEDS: WordSeed[] = [
   {
@@ -1294,7 +1294,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-100",
     jlptLevel: "N1",
     sequenceInLevel: 100,
-    kanji: "こす (みずを～)",
+    kanji: "漉す·濾す (みずを～)",
     kana: "こす (みずを～)",
     readingHiragana: "こす (みずを～)",
     meaningKo: "거르다·여과하다",
@@ -2139,7 +2139,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-165",
     jlptLevel: "N1",
     sequenceInLevel: 165,
-    kanji: "再발",
+    kanji: "再発",
     kana: "さいはつ",
     readingHiragana: "さいはつ",
     meaningKo: "재발",
@@ -2633,7 +2633,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-203",
     jlptLevel: "N1",
     sequenceInLevel: 203,
-    kanji: "さほど",
+    kanji: "然程",
     kana: "さほど",
     readingHiragana: "さほど",
     meaningKo: "그리·별로",
@@ -3192,7 +3192,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-246",
     jlptLevel: "N1",
     sequenceInLevel: 246,
-    kanji: "그러나ながら",
+    kanji: "併し乍ら",
     kana: "しかしながら",
     readingHiragana: "しかしながら",
     meaningKo: "그렇지만·하지만",
@@ -3231,7 +3231,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-249",
     jlptLevel: "N1",
     sequenceInLevel: 249,
-    kanji: "しきたり",
+    kanji: "仕来り・為来り",
     kana: "しきたり",
     readingHiragana: "しきたり",
     meaningKo: "관습·관례",
@@ -3296,7 +3296,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-254",
     jlptLevel: "N1",
     sequenceInLevel: 254,
-    kanji: "けがらわしい",
+    kanji: "汚らわしい-穢らわしい",
     kana: "けがらわしい",
     readingHiragana: "けがらわしい",
     meaningKo: "추잡한·불결한",
@@ -3868,7 +3868,7 @@ export const IMPORTED_WORD_SEEDS: WordSeed[] = [
     id: "n1-298",
     jlptLevel: "N1",
     sequenceInLevel: 298,
-    kanji: "動적",
+    kanji: "動的",
     kana: "どうてき",
     readingHiragana: "どうてき",
     meaningKo: "동적인",
