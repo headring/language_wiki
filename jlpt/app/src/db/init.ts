@@ -6,17 +6,6 @@ import { SCHEMA_SQL } from "./schema";
 const SCHEMA_VERSION = 3;
 const WORD_PACK_VERSION = APP_DATA_VERSION;
 
-async function resetContentTables(db: SQLiteDatabase) {
-  await db.execAsync(`
-    DELETE FROM study_round_records;
-    DELETE FROM session_queue_items;
-    DELETE FROM study_sessions;
-    DELETE FROM study_progress;
-    DELETE FROM round_presets;
-    DELETE FROM words;
-  `);
-}
-
 async function upsertPresetSeeds(db: SQLiteDatabase) {
   for (const preset of PRESET_SEEDS) {
     await db.runAsync(
@@ -39,6 +28,42 @@ async function upsertPresetSeeds(db: SQLiteDatabase) {
       preset.roundType,
       preset.rangeStart,
       preset.rangeEnd,
+    );
+  }
+}
+
+async function upsertWordSeeds(db: SQLiteDatabase) {
+  for (const word of WORD_SEEDS) {
+    await db.runAsync(
+      `
+        INSERT INTO words (
+          id, jlpt_level, sequence_in_level, kanji, kana,
+          reading_hiragana, meaning_ko, part_of_speech,
+          example_jp, example_ko, is_common_life
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+          jlpt_level = excluded.jlpt_level,
+          sequence_in_level = excluded.sequence_in_level,
+          kanji = excluded.kanji,
+          kana = excluded.kana,
+          reading_hiragana = excluded.reading_hiragana,
+          meaning_ko = excluded.meaning_ko,
+          part_of_speech = excluded.part_of_speech,
+          example_jp = excluded.example_jp,
+          example_ko = excluded.example_ko,
+          is_common_life = excluded.is_common_life
+      `,
+      word.id,
+      word.jlptLevel,
+      word.sequenceInLevel,
+      word.kanji,
+      word.kana,
+      word.readingHiragana,
+      word.meaningKo,
+      word.partOfSpeech || null,
+      word.exampleJp || null,
+      word.exampleKo || null,
+      word.isCommonLife ? 1 : 0,
     );
   }
 }
@@ -175,10 +200,10 @@ export async function initializeDatabase(db: SQLiteDatabase) {
     await migrateSchema(db, existingVersion.schema_version);
   }
 
-  const shouldReset =
+  const shouldSync =
     !existingVersion || existingVersion.word_pack_version !== WORD_PACK_VERSION;
 
-  if (!shouldReset) {
+  if (!shouldSync) {
     const wordCount = await db.getFirstAsync<{ count: number }>(
       "SELECT COUNT(*) as count FROM words",
     );
@@ -199,31 +224,7 @@ export async function initializeDatabase(db: SQLiteDatabase) {
   }
 
   await db.withExclusiveTransactionAsync(async (txn) => {
-    await resetContentTables(txn);
-
-    for (const word of WORD_SEEDS) {
-      await txn.runAsync(
-        `
-          INSERT INTO words (
-            id, jlpt_level, sequence_in_level, kanji, kana,
-            reading_hiragana, meaning_ko, part_of_speech,
-            example_jp, example_ko, is_common_life
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `,
-        word.id,
-        word.jlptLevel,
-        word.sequenceInLevel,
-        word.kanji,
-        word.kana,
-        word.readingHiragana,
-        word.meaningKo,
-        word.partOfSpeech || null,
-        word.exampleJp || null,
-        word.exampleKo || null,
-        word.isCommonLife ? 1 : 0,
-      );
-    }
-
+    await upsertWordSeeds(txn);
     await upsertPresetSeeds(txn);
 
     await txn.runAsync(
