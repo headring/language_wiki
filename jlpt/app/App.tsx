@@ -341,7 +341,7 @@ function AppShell() {
                 <View style={styles.presetInfo}>
                   <Text style={styles.presetTitle}>{preset.label}</Text>
                   <Text style={styles.presetMeta}>
-                    {preset.roundType.toUpperCase()} · 범위 {preset.rangeStart}-
+                    {preset.roundType.toUpperCase()} · 범위 {preset.rangeStart + 1}-
                     {preset.rangeEnd}
                   </Text>
                   <Text style={styles.presetProgress}>

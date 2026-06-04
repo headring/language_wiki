@@ -110,7 +110,7 @@ function buildPresetSeeds(words: WordSeed[]): PresetSeed[] {
 }
 
 const SAMPLE_PRESET_SEEDS: PresetSeed[] = buildPresetSeeds(SAMPLE_WORD_SEEDS);
-const PRESET_POLICY_VERSION = "preset-policy-v3";
+const PRESET_POLICY_VERSION = "preset-policy-v4";
 
 export const WORD_SEEDS: WordSeed[] =
   IMPORTED_WORD_SEEDS.length > 0 ? IMPORTED_WORD_SEEDS : SAMPLE_WORD_SEEDS;

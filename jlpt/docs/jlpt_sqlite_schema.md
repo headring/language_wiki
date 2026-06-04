@@ -22,7 +22,7 @@
 
 ## 현재 사용 테이블
 
-현재 앱 스키마는 아래 다섯 개 테이블을 기준으로 동작한다.
+현재 앱 스키마는 아래 일곱 개 테이블을 기준으로 동작한다.
 
 - `content_versions`
   - 현재 적재된 앱 데이터 버전을 저장한다.
@@ -34,6 +34,8 @@
   - 단어별 학습 결과를 저장한다.
 - `study_sessions`
   - 세션 단위 진행 상태를 저장한다.
+- `study_round_records`
+  - 완료된 세션별 회독 기록과 소요 시간을 저장한다.
 - `session_queue_items`
   - 현재 세션의 큐 순서와 회독 상태를 저장한다.
 
@@ -84,7 +86,25 @@
 - `range_start`, `range_end`
   - `sequence_in_level > range_start AND sequence_in_level <= range_end` 규칙으로 읽는다.
 
-현재 프리셋은 `generate-app-translated-data.mjs`에서 생성하며, 문서상 일반론이 아니라 현재 생성 스크립트의 규칙을 따른다.
+현재 프리셋은 `generate-app-translated-data.mjs`에서 생성하며, 문서상 일반론이 아니라 현재 생성 스크립트의 규칙을 따른다. N1은 `micro`를 쓰지 않고 아래 17개 세트만 사용한다.
+
+1. `1-300`
+2. `301-600`
+3. `1-600`
+4. `601-900`
+5. `901-1200`
+6. `601-1200`
+7. `1-1200`
+8. `1201-1500`
+9. `1501-1800`
+10. `1201-1800`
+11. `1801-2100`
+12. `2101-2400`
+13. `1801-2400`
+14. `1201-2400`
+15. `1-2400`
+16. `2401-2699`
+17. `1-2699`
 
 ### `study_progress`
 
@@ -115,6 +135,18 @@
 - `total_words`
 - `known_words`
 - `study_words`
+- `elapsed_seconds`
+- `elapsed_milliseconds`
+- `timer_started_at`
+
+### `study_round_records`
+
+- `preset_id`
+- `session_id`
+- `round_no`
+- `elapsed_seconds`
+- `elapsed_milliseconds`
+- `completed_at`
 
 ### `session_queue_items`
 
@@ -137,19 +169,21 @@
 
 1. 스키마 SQL을 실행한다.
 2. `content_versions`를 읽는다.
-3. `schema_version` 또는 `word_pack_version`이 다르면 콘텐츠를 리셋한다.
-4. `words`, `round_presets`를 `imported.ts` 기준으로 다시 넣는다.
-5. 새 버전을 `content_versions`에 기록한다.
+3. `schema_version`이 낮으면 필요한 스키마 마이그레이션을 실행한다.
+4. `word_pack_version`이 같고 `words`가 있더라도 `round_presets`를 `imported.ts` 기준으로 upsert 한다.
+5. `word_pack_version`이 다르거나 `words`가 비어 있으면 `words`, `round_presets`를 `imported.ts` 기준으로 upsert 한다.
+6. 새 버전을 `content_versions`에 기록한다.
 
-콘텐츠 리셋 시 아래 테이블이 비워진다.
+`round_presets` 적재 전에 N1의 stale preset을 삭제한다. 기준은 현재 `PRESET_SEEDS`에 포함된 N1 `preset_code`이며, 여기에 없는 기존 N1 프리셋은 로컬 DB에서 제거한다. 이 정책은 예전 `micro` 세트가 기존 SQLite에 남아 N1 목록에 섞여 표시되는 것을 막기 위한 것이다.
+
+데이터 버전 변경만으로 아래 진행 테이블은 비우지 않는다.
 
 - `session_queue_items`
 - `study_sessions`
 - `study_progress`
-- `round_presets`
-- `words`
+- `study_round_records`
 
-즉 데이터 버전이 바뀌면 학습 진행 상태도 함께 초기화된다.
+즉 표기 수정처럼 같은 단어 ID의 콘텐츠만 바뀌는 업데이트는 기존 회독 진행 상태를 유지한다.
 
 ## 현재 앱 구조
 

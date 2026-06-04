@@ -29,7 +29,94 @@ function escapeTs(value) {
   return JSON.stringify(value);
 }
 
+function createPresetSeed(level, sequenceNo, roundType, rangeStart, rangeEnd) {
+  return {
+    jlptLevel: level,
+    sequenceNo,
+    presetCode: `${level}-${rangeStart}-${rangeEnd}`,
+    label: `${level} ${rangeStart + 1}-${rangeEnd}`,
+    roundType,
+    rangeStart,
+    rangeEnd,
+  };
+}
+
+function buildN1PresetSeeds(level, count) {
+  const next = [];
+  let sequenceNo = 1;
+  let bandStart = 0;
+
+  while (bandStart + 1200 <= count) {
+    const firstHalfStart = bandStart;
+    const firstHalfEnd = bandStart + 600;
+    const secondHalfStart = firstHalfEnd;
+    const secondHalfEnd = bandStart + 1200;
+
+    next.push(
+      createPresetSeed(level, sequenceNo, "block", firstHalfStart, firstHalfStart + 300),
+    );
+    sequenceNo += 1;
+    next.push(
+      createPresetSeed(level, sequenceNo, "block", firstHalfStart + 300, firstHalfEnd),
+    );
+    sequenceNo += 1;
+    next.push(
+      createPresetSeed(level, sequenceNo, "merge", firstHalfStart, firstHalfEnd),
+    );
+    sequenceNo += 1;
+
+    next.push(
+      createPresetSeed(level, sequenceNo, "block", secondHalfStart, secondHalfStart + 300),
+    );
+    sequenceNo += 1;
+    next.push(
+      createPresetSeed(level, sequenceNo, "block", secondHalfStart + 300, secondHalfEnd),
+    );
+    sequenceNo += 1;
+    next.push(
+      createPresetSeed(level, sequenceNo, "merge", secondHalfStart, secondHalfEnd),
+    );
+    sequenceNo += 1;
+
+    next.push(createPresetSeed(level, sequenceNo, "merge", bandStart, secondHalfEnd));
+    sequenceNo += 1;
+
+    if (bandStart > 0) {
+      next.push(createPresetSeed(level, sequenceNo, "merge", 0, secondHalfEnd));
+      sequenceNo += 1;
+    }
+
+    bandStart = secondHalfEnd;
+  }
+
+  while (bandStart + 300 <= count) {
+    const blockEnd = bandStart + 300;
+    next.push(createPresetSeed(level, sequenceNo, "block", bandStart, blockEnd));
+    sequenceNo += 1;
+    bandStart = blockEnd;
+  }
+
+  if (bandStart < count) {
+    next.push(createPresetSeed(level, sequenceNo, "block", bandStart, count));
+    sequenceNo += 1;
+  }
+
+  const hasFullRangePreset = next.some(
+    (preset) => preset.rangeStart === 0 && preset.rangeEnd === count,
+  );
+
+  if (!hasFullRangePreset) {
+    next.push(createPresetSeed(level, sequenceNo, "merge", 0, count));
+  }
+
+  return next;
+}
+
 function buildPresetSeeds(level, count) {
+  if (level === "N1") {
+    return buildN1PresetSeeds(level, count);
+  }
+
   const next = [];
   let sequenceNo = 1;
   const opening = [50, 100, 150, 200, 250, 260, 300];

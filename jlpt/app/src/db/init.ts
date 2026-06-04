@@ -6,7 +6,31 @@ import { SCHEMA_SQL } from "./schema";
 const SCHEMA_VERSION = 3;
 const WORD_PACK_VERSION = APP_DATA_VERSION;
 
+async function deleteStaleN1PresetSeeds(db: SQLiteDatabase) {
+  const n1PresetCodes = PRESET_SEEDS.filter(
+    (preset) => preset.jlptLevel === "N1",
+  ).map((preset) => preset.presetCode);
+
+  if (n1PresetCodes.length === 0) {
+    return;
+  }
+
+  const placeholders = n1PresetCodes.map(() => "?").join(", ");
+
+  await db.runAsync(
+    `
+      DELETE FROM round_presets
+      WHERE jlpt_level = ?
+        AND preset_code NOT IN (${placeholders})
+    `,
+    "N1",
+    ...n1PresetCodes,
+  );
+}
+
 async function upsertPresetSeeds(db: SQLiteDatabase) {
+  await deleteStaleN1PresetSeeds(db);
+
   for (const preset of PRESET_SEEDS) {
     await db.runAsync(
       `
