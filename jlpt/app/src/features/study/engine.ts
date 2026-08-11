@@ -115,6 +115,7 @@ export async function getLevels(db: SQLiteDatabase): Promise<JlptLevel[]> {
         WHEN 'N3' THEN 3
         WHEN 'N2' THEN 4
         WHEN 'N1' THEN 5
+        WHEN 'N1-다락원' THEN 6
       END
     `,
   );
@@ -361,6 +362,7 @@ async function getCurrentCardForSession(
         w.meaning_ko as meaningKo,
         w.part_of_speech as partOfSpeech,
         w.example_jp as exampleJp,
+        w.example_reading_hiragana as exampleReadingHiragana,
         w.example_ko as exampleKo
       FROM session_queue_items sqi
       JOIN words w ON w.id = sqi.word_id
@@ -867,6 +869,7 @@ export async function applyQueueAction(
             w.meaning_ko as meaningKo,
             w.part_of_speech as partOfSpeech,
             w.example_jp as exampleJp,
+            w.example_reading_hiragana as exampleReadingHiragana,
             w.example_ko as exampleKo
           FROM session_queue_items sqi
           JOIN words w ON w.id = sqi.word_id

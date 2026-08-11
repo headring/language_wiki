@@ -1,0 +1,15 @@
+app/.expo/
+app/ios/.xcode.env.local
+app/ios/Pods/
+app/ios/build/
+app/android/.gradle/
+app/android/local.properties
+app/android/app/debug.keystore
+**/.DS_Store
+**/*.p12
+**/*.mobileprovision
+**/*.p8
+**/*.key
+**/*.jks
+**/.env.local
+**/.env.*.local

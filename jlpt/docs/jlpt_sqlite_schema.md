@@ -68,10 +68,11 @@
 - `meaning_ko`
 - `part_of_speech`
 - `example_jp`
+- `example_reading_hiragana`
 - `example_ko`
 - `is_common_life`
 
-현재 CSV에서 품사와 예문은 채우지 않으므로 빈 값으로 들어간다.
+현재 CSV에서 품사는 채우지 않으므로 빈 값으로 들어간다. 예문은 일본어, 전체 히라가나, 한국어 번역을 저장한다.
 
 ### `round_presets`
 
@@ -103,8 +104,8 @@
 13. `1801-2400`
 14. `1201-2400`
 15. `1-2400`
-16. `2401-2699`
-17. `1-2699`
+16. `2401-2698`
+17. `1-2698`
 
 ### `study_progress`
 

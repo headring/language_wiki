@@ -3,33 +3,35 @@ import type { SQLiteDatabase } from "expo-sqlite";
 import { APP_DATA_VERSION, PRESET_SEEDS, WORD_SEEDS } from "../data/seed";
 import { SCHEMA_SQL } from "./schema";
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 5;
 const WORD_PACK_VERSION = APP_DATA_VERSION;
 
-async function deleteStaleN1PresetSeeds(db: SQLiteDatabase) {
-  const n1PresetCodes = PRESET_SEEDS.filter(
-    (preset) => preset.jlptLevel === "N1",
-  ).map((preset) => preset.presetCode);
+async function deleteStalePresetSeeds(db: SQLiteDatabase) {
+  for (const level of ["N1", "N1-다락원"]) {
+    const presetCodes = PRESET_SEEDS.filter(
+      (preset) => preset.jlptLevel === level,
+    ).map((preset) => preset.presetCode);
 
-  if (n1PresetCodes.length === 0) {
-    return;
+    if (presetCodes.length === 0) {
+      continue;
+    }
+
+    const placeholders = presetCodes.map(() => "?").join(", ");
+
+    await db.runAsync(
+      `
+        DELETE FROM round_presets
+        WHERE jlpt_level = ?
+          AND preset_code NOT IN (${placeholders})
+      `,
+      level,
+      ...presetCodes,
+    );
   }
-
-  const placeholders = n1PresetCodes.map(() => "?").join(", ");
-
-  await db.runAsync(
-    `
-      DELETE FROM round_presets
-      WHERE jlpt_level = ?
-        AND preset_code NOT IN (${placeholders})
-    `,
-    "N1",
-    ...n1PresetCodes,
-  );
 }
 
 async function upsertPresetSeeds(db: SQLiteDatabase) {
-  await deleteStaleN1PresetSeeds(db);
+  await deleteStalePresetSeeds(db);
 
   for (const preset of PRESET_SEEDS) {
     await db.runAsync(
@@ -63,8 +65,8 @@ async function upsertWordSeeds(db: SQLiteDatabase) {
         INSERT INTO words (
           id, jlpt_level, sequence_in_level, kanji, kana,
           reading_hiragana, meaning_ko, part_of_speech,
-          example_jp, example_ko, is_common_life
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          example_jp, example_reading_hiragana, example_ko, is_common_life
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(id) DO UPDATE SET
           jlpt_level = excluded.jlpt_level,
           sequence_in_level = excluded.sequence_in_level,
@@ -74,6 +76,7 @@ async function upsertWordSeeds(db: SQLiteDatabase) {
           meaning_ko = excluded.meaning_ko,
           part_of_speech = excluded.part_of_speech,
           example_jp = excluded.example_jp,
+          example_reading_hiragana = excluded.example_reading_hiragana,
           example_ko = excluded.example_ko,
           is_common_life = excluded.is_common_life
       `,
@@ -86,6 +89,7 @@ async function upsertWordSeeds(db: SQLiteDatabase) {
       word.meaningKo,
       word.partOfSpeech || null,
       word.exampleJp || null,
+      word.exampleReadingHiragana || null,
       word.exampleKo || null,
       word.isCommonLife ? 1 : 0,
     );
@@ -99,9 +103,125 @@ async function getTableColumns(db: SQLiteDatabase, tableName: string) {
   return new Set(rows.map((row) => row.name));
 }
 
+async function migrateJlptLevelConstraint(db: SQLiteDatabase) {
+  await db.execAsync("PRAGMA foreign_keys = OFF");
+
+  try {
+    await db.execAsync(`
+      BEGIN IMMEDIATE;
+
+      DROP TABLE IF EXISTS words_v5;
+      CREATE TABLE words_v5 (
+        id TEXT PRIMARY KEY,
+        jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원')),
+        sequence_in_level INTEGER NOT NULL,
+        kanji TEXT NOT NULL,
+        kana TEXT,
+        reading_hiragana TEXT,
+        meaning_ko TEXT NOT NULL,
+        part_of_speech TEXT,
+        example_jp TEXT,
+        example_reading_hiragana TEXT,
+        example_ko TEXT,
+        is_common_life INTEGER NOT NULL DEFAULT 0 CHECK (is_common_life IN (0, 1))
+      );
+      INSERT INTO words_v5 (
+        id, jlpt_level, sequence_in_level, kanji, kana,
+        reading_hiragana, meaning_ko, part_of_speech,
+        example_jp, example_reading_hiragana, example_ko, is_common_life
+      )
+      SELECT
+        id, jlpt_level, sequence_in_level, kanji, kana,
+        reading_hiragana, meaning_ko, part_of_speech,
+        example_jp, example_reading_hiragana, example_ko, is_common_life
+      FROM words;
+      DROP TABLE words;
+      ALTER TABLE words_v5 RENAME TO words;
+      CREATE UNIQUE INDEX idx_words_level_sequence
+        ON words (jlpt_level, sequence_in_level);
+
+      DROP TABLE IF EXISTS round_presets_v5;
+      CREATE TABLE round_presets_v5 (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원')),
+        sequence_no INTEGER NOT NULL,
+        preset_code TEXT NOT NULL,
+        label TEXT NOT NULL,
+        round_type TEXT NOT NULL CHECK (round_type IN ('micro', 'block', 'merge')),
+        range_start INTEGER NOT NULL,
+        range_end INTEGER NOT NULL,
+        UNIQUE (jlpt_level, preset_code)
+      );
+      INSERT INTO round_presets_v5 (
+        id, jlpt_level, sequence_no, preset_code, label,
+        round_type, range_start, range_end
+      )
+      SELECT
+        id, jlpt_level, sequence_no, preset_code, label,
+        round_type, range_start, range_end
+      FROM round_presets;
+      DROP TABLE round_presets;
+      ALTER TABLE round_presets_v5 RENAME TO round_presets;
+
+      DROP TABLE IF EXISTS study_sessions_v5;
+      CREATE TABLE study_sessions_v5 (
+        id TEXT PRIMARY KEY,
+        jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원')),
+        preset_id INTEGER,
+        source_type TEXT NOT NULL CHECK (source_type IN ('preset')),
+        range_start INTEGER,
+        range_end INTEGER,
+        current_pass_no INTEGER NOT NULL DEFAULT 1,
+        started_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        completed_at TEXT,
+        is_completed INTEGER NOT NULL DEFAULT 0 CHECK (is_completed IN (0, 1)),
+        total_words INTEGER NOT NULL DEFAULT 0,
+        known_words INTEGER NOT NULL DEFAULT 0,
+        study_words INTEGER NOT NULL DEFAULT 0,
+        elapsed_seconds INTEGER NOT NULL DEFAULT 0,
+        elapsed_milliseconds INTEGER NOT NULL DEFAULT 0,
+        timer_started_at TEXT,
+        FOREIGN KEY (preset_id) REFERENCES round_presets(id) ON DELETE SET NULL
+      );
+      INSERT INTO study_sessions_v5 (
+        id, jlpt_level, preset_id, source_type, range_start, range_end,
+        current_pass_no, started_at, completed_at, is_completed,
+        total_words, known_words, study_words, elapsed_seconds,
+        elapsed_milliseconds, timer_started_at
+      )
+      SELECT
+        id, jlpt_level, preset_id, source_type, range_start, range_end,
+        current_pass_no, started_at, completed_at, is_completed,
+        total_words, known_words, study_words, elapsed_seconds,
+        elapsed_milliseconds, timer_started_at
+      FROM study_sessions;
+      DROP TABLE study_sessions;
+      ALTER TABLE study_sessions_v5 RENAME TO study_sessions;
+
+      COMMIT;
+    `);
+  } catch (error) {
+    await db.execAsync("ROLLBACK").catch(() => undefined);
+    throw error;
+  } finally {
+    await db.execAsync("PRAGMA foreign_keys = ON");
+  }
+
+  const violations = await db.getAllAsync("PRAGMA foreign_key_check");
+  if (violations.length > 0) {
+    throw new Error("Schema migration left invalid foreign keys");
+  }
+}
+
 async function migrateSchema(db: SQLiteDatabase, schemaVersion: number) {
   if (schemaVersion >= SCHEMA_VERSION) {
     return;
+  }
+
+  const wordColumns = await getTableColumns(db, "words");
+
+  if (!wordColumns.has("example_reading_hiragana")) {
+    await db.execAsync("ALTER TABLE words ADD COLUMN example_reading_hiragana TEXT");
   }
 
   const sessionColumns = await getTableColumns(db, "study_sessions");
@@ -153,6 +273,10 @@ async function migrateSchema(db: SQLiteDatabase, schemaVersion: number) {
     await db.execAsync(
       "UPDATE study_round_records SET elapsed_milliseconds = elapsed_seconds * 1000 WHERE elapsed_milliseconds = 0",
     );
+  }
+
+  if (schemaVersion < 5) {
+    await migrateJlptLevelConstraint(db);
   }
 
   const completedSessions = await db.getAllAsync<{

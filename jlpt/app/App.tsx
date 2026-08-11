@@ -417,44 +417,64 @@ function AppShell() {
               {currentSessionSnapshot.currentCard.partOfSpeech ?? "단어"}
             </Text>
 
+            {currentSessionSnapshot.currentCard.exampleJp ? (
+              <View style={styles.exampleBox}>
+                <Text style={styles.exampleLabel}>예문</Text>
+                <Text style={styles.exampleText}>
+                  {currentSessionSnapshot.currentCard.exampleJp}
+                </Text>
+              </View>
+            ) : null}
+
             <View style={styles.revealBox}>
               <Text style={styles.revealLabel}>한국어</Text>
-              <Text
-                style={[
-                  styles.revealText,
-                  !showMeaning && styles.revealTextHidden,
-                ]}
-              >
-                {showMeaning
-                  ? currentSessionSnapshot.currentCard.meaningKo
-                  : "뜻 미리보기"}
-              </Text>
+              {showMeaning ? (
+                <>
+                  <Text style={styles.revealText}>
+                    {currentSessionSnapshot.currentCard.meaningKo}
+                  </Text>
+                  {currentSessionSnapshot.currentCard.exampleKo ? (
+                    <Text style={styles.revealSubtext}>
+                      {currentSessionSnapshot.currentCard.exampleKo}
+                    </Text>
+                  ) : null}
+                </>
+              ) : null}
             </View>
 
             <View style={styles.revealBox}>
               <Text style={styles.revealLabel}>히라가나</Text>
-              <Text
-                style={[
-                  styles.revealText,
-                  !showReading && styles.revealTextHidden,
-                ]}
-              >
-                {showReading
-                  ? (currentSessionSnapshot.currentCard.readingHiragana ??
-                    currentSessionSnapshot.currentCard.kana ??
-                    "-")
-                  : "히라가나 미리보기"}
-              </Text>
+              {showReading ? (
+                <>
+                  <Text style={styles.revealText}>
+                    {currentSessionSnapshot.currentCard.readingHiragana ??
+                      currentSessionSnapshot.currentCard.kana ??
+                      "-"}
+                  </Text>
+                  {currentSessionSnapshot.currentCard.exampleReadingHiragana ? (
+                    <Text style={styles.revealSubtext}>
+                      {
+                        currentSessionSnapshot.currentCard
+                          .exampleReadingHiragana
+                      }
+                    </Text>
+                  ) : null}
+                </>
+              ) : null}
             </View>
 
             <View style={styles.toggleRow}>
               <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ expanded: showMeaning }}
                 style={styles.secondaryButton}
                 onPress={() => setShowMeaning((value) => !value)}
               >
                 <Text style={styles.secondaryButtonText}>한국어</Text>
               </Pressable>
               <Pressable
+                accessibilityRole="button"
+                accessibilityState={{ expanded: showReading }}
                 style={styles.secondaryButton}
                 onPress={() => setShowReading((value) => !value)}
               >
@@ -477,19 +497,6 @@ function AppShell() {
               </Pressable>
             </View>
 
-            {currentSessionSnapshot.currentCard.exampleJp ? (
-              <View style={styles.exampleBox}>
-                <Text style={styles.exampleLabel}>예문</Text>
-                <Text style={styles.exampleText}>
-                  {currentSessionSnapshot.currentCard.exampleJp}
-                </Text>
-                {currentSessionSnapshot.currentCard.exampleKo ? (
-                  <Text style={styles.exampleSubtext}>
-                    {currentSessionSnapshot.currentCard.exampleKo}
-                  </Text>
-                ) : null}
-              </View>
-            ) : null}
           </View>
         </ScrollView>
       ) : null}
@@ -890,8 +897,9 @@ const styles = StyleSheet.create({
     color: "#12312d",
     minHeight: 28,
   },
-  revealTextHidden: {
-    opacity: 0,
+  revealSubtext: {
+    color: "#5a706b",
+    lineHeight: 22,
   },
   toggleRow: {
     flexDirection: "row",
@@ -945,10 +953,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: "#12312d",
-  },
-  exampleSubtext: {
-    color: "#5a706b",
-    lineHeight: 22,
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,

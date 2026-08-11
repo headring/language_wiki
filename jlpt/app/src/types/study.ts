@@ -1,4 +1,4 @@
-export type JlptValue = "N5" | "N4" | "N3" | "N2" | "N1";
+export type JlptValue = "N5" | "N4" | "N3" | "N2" | "N1" | "N1-다락원";
 
 export type JlptLevel = {
   jlptLevel: JlptValue;
@@ -15,6 +15,7 @@ export type WordSeed = {
   meaningKo: string;
   partOfSpeech?: string;
   exampleJp?: string;
+  exampleReadingHiragana?: string;
   exampleKo?: string;
   isCommonLife?: boolean;
 };
@@ -76,6 +77,7 @@ export type CurrentCard = {
   meaningKo: string;
   partOfSpeech: string | null;
   exampleJp: string | null;
+  exampleReadingHiragana: string | null;
   exampleKo: string | null;
 };
 

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS words (
   meaning_ko TEXT NOT NULL,
   part_of_speech TEXT,
   example_jp TEXT,
+  example_reading_hiragana TEXT,
   example_ko TEXT,
   is_common_life INTEGER NOT NULL DEFAULT 0 CHECK (is_common_life IN (0, 1))
 );
