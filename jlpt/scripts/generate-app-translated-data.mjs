@@ -18,9 +18,9 @@ const darakwonFile =
   typeof args.darakwon === "string"
     ? args.darakwon
     : `${inputDir}/../n1_1051_examples_corrected.csv`;
-const N1_ROW_COUNT = 2706;
+const N1_ROW_COUNT = 2716;
 const N1_SOURCE_FIELDS_SHA256 =
-  "ae3d957beebc079a9d0829213397e2b40ee8e8ea0eded8f303cbbb4b4b08d3d6";
+  "9978af184eafc8f5a0c79e4bd43ccb29aa3b08fc7dd88d8703eeb34b15bdcc12";
 const DARAKWON_ROW_COUNT = 1051;
 const DARAKWON_SOURCE_FIELDS_SHA256 =
   "4317a4f925f79c46b0f92193feb3e8106ecbb1263825bfb9468e43a30c7c0235";
