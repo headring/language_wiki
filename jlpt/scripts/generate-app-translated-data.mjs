@@ -18,12 +18,31 @@ const darakwonFile =
   typeof args.darakwon === "string"
     ? args.darakwon
     : `${inputDir}/../n1_1051_examples_corrected.csv`;
+const darakwonParticlesFile =
+  typeof args["darakwon-particles"] === "string"
+    ? args["darakwon-particles"]
+    : `${inputDir}/../n1_darakwon_particles.csv`;
 const N1_ROW_COUNT = 2716;
 const N1_SOURCE_FIELDS_SHA256 =
   "9978af184eafc8f5a0c79e4bd43ccb29aa3b08fc7dd88d8703eeb34b15bdcc12";
 const DARAKWON_ROW_COUNT = 1051;
 const DARAKWON_SOURCE_FIELDS_SHA256 =
   "4317a4f925f79c46b0f92193feb3e8106ecbb1263825bfb9468e43a30c7c0235";
+const DARAKWON_PARTICLE_ROW_COUNT = 137;
+const DARAKWON_PARTICLE_INCLUDED_ROW_COUNT = 119;
+const DARAKWON_PARTICLE_DUPLICATE_ROW_COUNT = 18;
+const DARAKWON_PARTICLE_SOURCE_FIELDS_SHA256 =
+  "7169fb7629fbe0f11a930baa5ccbc0b82982b6698d1e3db3d308db50d03ce335";
+const EXAMPLE_CSV_HEADER = [
+  "expression",
+  "reading",
+  "meaning",
+  "tags",
+  "guid",
+  "example_jp",
+  "example_reading_hiragana",
+  "example_ko",
+];
 const expectedExamples = Number(args["expected-examples"] ?? N1_ROW_COUNT);
 
 if (
@@ -65,18 +84,7 @@ function validateExampleRows(
   const header = rows[0].map((value, index) =>
     index === 0 ? value.replace(/^\uFEFF/, "") : value,
   );
-  const expectedHeader = [
-    "expression",
-    "reading",
-    "meaning",
-    "tags",
-    "guid",
-    "example_jp",
-    "example_reading_hiragana",
-    "example_ko",
-  ];
-
-  if (JSON.stringify(header) !== JSON.stringify(expectedHeader)) {
+  if (JSON.stringify(header) !== JSON.stringify(EXAMPLE_CSV_HEADER)) {
     throw new Error(`${label} CSV header mismatch: ${header.join(",")}`);
   }
 
@@ -139,6 +147,40 @@ function validateDarakwonRows(rows) {
     expectedSourceFieldsHash: DARAKWON_SOURCE_FIELDS_SHA256,
     completedExamples: DARAKWON_ROW_COUNT,
   });
+}
+
+function validateDarakwonParticleRows(rows) {
+  validateExampleRows(rows, {
+    label: "다락원 문법 모음집",
+    rowCount: DARAKWON_PARTICLE_ROW_COUNT,
+    expectedSourceFieldsHash: DARAKWON_PARTICLE_SOURCE_FIELDS_SHA256,
+    completedExamples: DARAKWON_PARTICLE_ROW_COUNT,
+  });
+
+  const duplicateCount = rows
+    .slice(1)
+    .filter((row) => (row[3] ?? "").split(/\s+/).includes("기존DB중복"))
+    .length;
+
+  if (duplicateCount !== DARAKWON_PARTICLE_DUPLICATE_ROW_COUNT) {
+    throw new Error(
+      `다락원 문법 모음집 must mark ${DARAKWON_PARTICLE_DUPLICATE_ROW_COUNT} duplicate rows, got ${duplicateCount}`,
+    );
+  }
+}
+
+function darakwonPartOfSpeech(tags) {
+  if (tags.includes("접속사") || tags.includes("시험접속어")) return "접속사";
+  if (tags.includes("부사")) return "부사";
+  if (tags.includes("지시어")) return "지시어";
+  if (tags.includes("조사")) return "조사";
+  if (tags.includes("축약형")) return "축약형";
+  return "연체사·기타";
+}
+
+function darakwonWordId(guid) {
+  const particleMatch = guid.match(/^darakwon-particle-0*(\d+)$/);
+  return particleMatch ? `darakwon-particle-${Number(particleMatch[1])}` : guid;
 }
 
 function createPresetSeed(level, sequenceNo, roundType, rangeStart, rangeEnd) {
@@ -256,6 +298,20 @@ function buildDarakwonPresetSeeds(level, count) {
 }
 
 function buildPresetSeeds(level, count) {
+  if (level === "다락원 조사 모음집") {
+    return [
+      {
+        jlptLevel: level,
+        sequenceNo: 1,
+        presetCode: "darakwon-particle-0-18",
+        label: `다락원 문법 1-${count}`,
+        roundType: "block",
+        rangeStart: 0,
+        rangeEnd: count,
+      },
+    ];
+  }
+
   if (level === "N1") {
     return buildN1PresetSeeds(level, count);
   }
@@ -350,16 +406,24 @@ const sources = [
     idPrefix: "n1-darakwon",
     level: "N1-다락원",
   },
+  {
+    file: darakwonParticlesFile,
+    idPrefix: "darakwon-particle",
+    level: "다락원 조사 모음집",
+  },
 ];
 
 for (const source of sources) {
   const csvText = await readText(source.file);
   const rows = parseCsv(csvText);
+  let sourceWordCount = 0;
 
   if (source.level === "N1") {
     validateN1Rows(rows);
   } else if (source.level === "N1-다락원") {
     validateDarakwonRows(rows);
+  } else if (source.level === "다락원 조사 모음집") {
+    validateDarakwonParticleRows(rows);
   }
 
   for (let index = 1; index < rows.length; index += 1) {
@@ -367,8 +431,8 @@ for (const source of sources) {
       expression = "",
       reading = "",
       meaning = "",
-      ,
-      ,
+      tags = "",
+      guid = "",
       exampleJp = "",
       exampleReadingHiragana = "",
       exampleKo = "",
@@ -377,15 +441,32 @@ for (const source of sources) {
       continue;
     }
 
+
+    const tagList = tags.split(/\s+/).filter(Boolean);
+    if (
+      source.level === "다락원 조사 모음집" &&
+      tagList.includes("기존DB중복")
+    ) {
+      continue;
+    }
+
+    sourceWordCount += 1;
+
     words.push({
-      id: `${source.idPrefix}-${index}`,
+      id:
+        source.level === "다락원 조사 모음집"
+          ? darakwonWordId(guid.trim())
+          : `${source.idPrefix}-${index}`,
       jlptLevel: source.level,
-      sequenceInLevel: index,
+      sequenceInLevel: sourceWordCount,
       kanji: expression.trim(),
       kana: reading.trim(),
       readingHiragana: reading.trim(),
       meaningKo: meaning.trim(),
-      partOfSpeech: "",
+      partOfSpeech:
+        source.level === "다락원 조사 모음집"
+          ? darakwonPartOfSpeech(tagList)
+          : "",
       exampleJp: exampleJp.trim(),
       exampleReadingHiragana: exampleReadingHiragana.trim(),
       exampleKo: exampleKo.trim(),
@@ -393,7 +474,16 @@ for (const source of sources) {
     });
   }
 
-  presets.push(...buildPresetSeeds(source.level, rows.length - 1));
+  if (
+    source.level === "다락원 조사 모음집" &&
+    sourceWordCount !== DARAKWON_PARTICLE_INCLUDED_ROW_COUNT
+  ) {
+    throw new Error(
+      `다락원 문법 모음집 must include ${DARAKWON_PARTICLE_INCLUDED_ROW_COUNT} rows, got ${sourceWordCount}`,
+    );
+  }
+
+  presets.push(...buildPresetSeeds(source.level, sourceWordCount));
 }
 
 const renderedWords = words.map(

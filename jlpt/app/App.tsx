@@ -303,7 +303,10 @@ function AppShell() {
               <View>
                 <Text style={styles.levelTitle}>{level.jlptLevel}</Text>
                 <Text style={styles.levelMeta}>
-                  {level.wordCount}개 샘플 단어
+                  {level.wordCount}개{" "}
+                  {level.jlptLevel === "다락원 조사 모음집"
+                    ? "문법 카드"
+                    : "샘플 단어"}
                 </Text>
               </View>
               <Text style={styles.levelChevron}>열기</Text>
@@ -322,7 +325,11 @@ function AppShell() {
             <Pressable onPress={goHome}>
               <Text style={styles.backButton}>뒤로</Text>
             </Pressable>
-            <Text style={styles.headerTitle}>{currentLevel} 세트</Text>
+            <Text style={styles.headerTitle}>
+              {currentLevel === "다락원 조사 모음집"
+                ? currentLevel
+                : `${currentLevel} 세트`}
+            </Text>
             <View style={styles.headerSpacer} />
           </View>
 

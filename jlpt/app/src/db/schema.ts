@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS content_versions (
 
 CREATE TABLE IF NOT EXISTS words (
   id TEXT PRIMARY KEY,
-  jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원')),
+  jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원', '다락원 조사 모음집')),
   sequence_in_level INTEGER NOT NULL,
   kanji TEXT NOT NULL,
   kana TEXT,
@@ -28,7 +28,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_words_level_sequence
 
 CREATE TABLE IF NOT EXISTS round_presets (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원')),
+  jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원', '다락원 조사 모음집')),
   sequence_no INTEGER NOT NULL,
   preset_code TEXT NOT NULL,
   label TEXT NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS study_progress (
 
 CREATE TABLE IF NOT EXISTS study_sessions (
   id TEXT PRIMARY KEY,
-  jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원')),
+  jlpt_level TEXT NOT NULL CHECK (jlpt_level IN ('N5', 'N4', 'N3', 'N2', 'N1', 'N1-다락원', '다락원 조사 모음집')),
   preset_id INTEGER,
   source_type TEXT NOT NULL CHECK (source_type IN ('preset')),
   range_start INTEGER,

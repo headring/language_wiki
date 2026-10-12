@@ -116,6 +116,7 @@ export async function getLevels(db: SQLiteDatabase): Promise<JlptLevel[]> {
         WHEN 'N2' THEN 4
         WHEN 'N1' THEN 5
         WHEN 'N1-다락원' THEN 6
+        WHEN '다락원 조사 모음집' THEN 7
       END
     `,
   );

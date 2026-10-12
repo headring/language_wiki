@@ -1,4 +1,11 @@
-export type JlptValue = "N5" | "N4" | "N3" | "N2" | "N1" | "N1-다락원";
+export type JlptValue =
+  | "N5"
+  | "N4"
+  | "N3"
+  | "N2"
+  | "N1"
+  | "N1-다락원"
+  | "다락원 조사 모음집";
 
 export type JlptLevel = {
   jlptLevel: JlptValue;
