@@ -1,6 +1,6 @@
 import type { PresetSeed, WordSeed } from "../types/study";
 
-export const IMPORTED_DATA_VERSION = "translated-2026-10-06T00:09:10.096Z";
+export const IMPORTED_DATA_VERSION = "translated-2026-10-15T04:38:48.940Z";
 
 const IMPORTED_WORD_SEED_CHUNKS: WordSeed[][] = [
   [
@@ -38039,6 +38039,104 @@ const IMPORTED_WORD_SEED_CHUNKS: WordSeed[][] = [
       isCommonLife: false,
     },
     {
+      id: "n1-2717",
+      jlptLevel: "N1",
+      sequenceInLevel: 2717,
+      kanji: "見極める",
+      kana: "みきわめる",
+      readingHiragana: "みきわめる",
+      meaningKo: "끝까지 지켜보다·확실히 판단하다",
+      partOfSpeech: "",
+      exampleJp: "状況を見極めてから判断する。",
+      exampleReadingHiragana: "じょうきょうをみきわめてからはんだんする。",
+      exampleKo: "상황을 확실히 파악한 뒤 판단한다.",
+      isCommonLife: false,
+    },
+    {
+      id: "n1-2718",
+      jlptLevel: "N1",
+      sequenceInLevel: 2718,
+      kanji: "実",
+      kana: "み",
+      readingHiragana: "み",
+      meaningKo: "열매·과실",
+      partOfSpeech: "",
+      exampleJp: "この木は秋に赤い実をつける。",
+      exampleReadingHiragana: "このきはあきにあかいみをつける。",
+      exampleKo: "이 나무는 가을에 빨간 열매를 맺는다.",
+      isCommonLife: false,
+    },
+    {
+      id: "n1-2719",
+      jlptLevel: "N1",
+      sequenceInLevel: 2719,
+      kanji: "行き渡る",
+      kana: "ゆきわたる",
+      readingHiragana: "ゆきわたる",
+      meaningKo: "골고루 미치다·널리 퍼지다",
+      partOfSpeech: "",
+      exampleJp: "必要な物資が被災地全体に行き渡った。",
+      exampleReadingHiragana: "ひつようなぶっしがひさいちぜんたいにゆきわたった。",
+      exampleKo: "필요한 물자가 재해 지역 전체에 골고루 전달되었다.",
+      isCommonLife: false,
+    },
+    {
+      id: "n1-2720",
+      jlptLevel: "N1",
+      sequenceInLevel: 2720,
+      kanji: "劣等感",
+      kana: "れっとうかん",
+      readingHiragana: "れっとうかん",
+      meaningKo: "열등감",
+      partOfSpeech: "",
+      exampleJp: "他人と比べて劣等感を抱く必要はない。",
+      exampleReadingHiragana: "たにんとくらべてれっとうかんをいだくひつようはない。",
+      exampleKo: "남과 비교하며 열등감을 품을 필요는 없다.",
+      isCommonLife: false,
+    },
+    {
+      id: "n1-2721",
+      jlptLevel: "N1",
+      sequenceInLevel: 2721,
+      kanji: "身構える",
+      kana: "みがまえる",
+      readingHiragana: "みがまえる",
+      meaningKo: "자세를 갖추다·경계 태세를 취하다",
+      partOfSpeech: "",
+      exampleJp: "突然の物音に思わず身構えた。",
+      exampleReadingHiragana: "とつぜんのものおとにおもわずみがまえた。",
+      exampleKo: "갑작스러운 소리에 나도 모르게 경계 태세를 취했다.",
+      isCommonLife: false,
+    },
+    {
+      id: "n1-2722",
+      jlptLevel: "N1",
+      sequenceInLevel: 2722,
+      kanji: "委ねる",
+      kana: "ゆだねる",
+      readingHiragana: "ゆだねる",
+      meaningKo: "맡기다·일임하다",
+      partOfSpeech: "",
+      exampleJp: "最終的な判断は本人に委ねる。",
+      exampleReadingHiragana: "さいしゅうてきなはんだんはほんにんにゆだねる。",
+      exampleKo: "최종 판단은 본인에게 맡긴다.",
+      isCommonLife: false,
+    },
+    {
+      id: "n1-2723",
+      jlptLevel: "N1",
+      sequenceInLevel: 2723,
+      kanji: "劣る",
+      kana: "おとる",
+      readingHiragana: "おとる",
+      meaningKo: "뒤떨어지다·못하다",
+      partOfSpeech: "",
+      exampleJp: "この製品は価格が安いが品質では他社に劣る。",
+      exampleReadingHiragana: "このせいひんはかかくがやすいがひんしつではたしゃにおとる。",
+      exampleKo: "이 제품은 가격이 저렴하지만 품질에서는 다른 회사에 뒤떨어진다.",
+      isCommonLife: false,
+    },
+    {
       id: "n1-darakwon-1",
       jlptLevel: "N1-다락원",
       sequenceInLevel: 1,
@@ -41915,7 +42013,9 @@ const IMPORTED_WORD_SEED_CHUNKS: WordSeed[][] = [
       exampleReadingHiragana: "まつりではでんとうてきないしょうをみにつける。",
       exampleKo: "축제에서는 전통 의상을 입는다.",
       isCommonLife: false,
-    },
+    }
+  ],
+  [
     {
       id: "n1-darakwon-278",
       jlptLevel: "N1-다락원",
@@ -42013,9 +42113,7 @@ const IMPORTED_WORD_SEED_CHUNKS: WordSeed[][] = [
       exampleReadingHiragana: "しみんだんたいはかくへいきのはいぜつをとなえた。",
       exampleKo: "시민 단체는 핵무기 폐기를 주장했다.",
       isCommonLife: false,
-    }
-  ],
-  [
+    },
     {
       id: "n1-darakwon-285",
       jlptLevel: "N1-다락원",
@@ -48917,7 +49015,9 @@ const IMPORTED_WORD_SEED_CHUNKS: WordSeed[][] = [
       exampleReadingHiragana: "かりたほんはにしゅうかんいないにへんきゃくしてください。",
       exampleKo: "빌린 책은 2주 이내에 반납해 주세요.",
       isCommonLife: false,
-    },
+    }
+  ],
+  [
     {
       id: "n1-darakwon-778",
       jlptLevel: "N1-다락원",
@@ -49015,9 +49115,7 @@ const IMPORTED_WORD_SEED_CHUNKS: WordSeed[][] = [
       exampleReadingHiragana: "しけんちゅうにつかったけいたいでんわはかんとくにぼっしゅうされた。",
       exampleKo: "시험 중 사용한 휴대전화는 감독관에게 몰수당했다.",
       isCommonLife: false,
-    }
-  ],
-  [
+    },
     {
       id: "n1-darakwon-785",
       jlptLevel: "N1-다락원",
@@ -54575,20 +54673,20 @@ export const IMPORTED_PRESET_SEEDS: PresetSeed[] = [
   {
     jlptLevel: "N1",
     sequenceNo: 17,
-    presetCode: "N1-2700-2716",
-    label: "N1 2701-2716",
+    presetCode: "N1-2700-2723",
+    label: "N1 2701-2723",
     roundType: "block",
     rangeStart: 2700,
-    rangeEnd: 2716,
+    rangeEnd: 2723,
   },
   {
     jlptLevel: "N1",
     sequenceNo: 18,
-    presetCode: "N1-0-2716",
-    label: "N1 1-2716",
+    presetCode: "N1-0-2723",
+    label: "N1 1-2723",
     roundType: "merge",
     rangeStart: 0,
-    rangeEnd: 2716,
+    rangeEnd: 2723,
   },
   {
     jlptLevel: "N1-다락원",
