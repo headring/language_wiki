@@ -375,101 +375,105 @@ function AppShell() {
       ) : null}
 
       {screen === "study" && currentSessionSnapshot ? (
-        <ScrollView
-          style={styles.screen}
-          contentContainerStyle={styles.content}
-          contentInsetAdjustmentBehavior="automatic"
-        >
-          <View style={styles.headerRow}>
-            <Pressable
-              onPress={() => void leaveStudy(db)}
-            >
-              <Text style={styles.backButton}>나가기</Text>
-            </Pressable>
-            <Text style={styles.headerTitle}>
-              {currentSessionSnapshot.preset.label}
-            </Text>
-            <View style={styles.headerSpacer} />
-          </View>
-
-          <View style={styles.progressPanel}>
-            <View style={styles.progressHeaderRow}>
-              <Text style={styles.progressText}>
-                {getRoundLabel(
-                  currentSessionSnapshot.preset.completedStudyCount + 1,
-                )}{" "}
-                진행 중
+        <View style={styles.screen}>
+          <ScrollView
+            style={styles.screen}
+            contentContainerStyle={styles.content}
+            contentInsetAdjustmentBehavior="automatic"
+          >
+            <View style={styles.headerRow}>
+              <Pressable
+                onPress={() => void leaveStudy(db)}
+              >
+                <Text style={styles.backButton}>나가기</Text>
+              </Pressable>
+              <Text style={styles.headerTitle}>
+                {currentSessionSnapshot.preset.label}
               </Text>
-              <Text style={styles.progressBadge}>
-                {getStudyProgressLabel(currentSessionSnapshot)}
-              </Text>
+              <View style={styles.headerSpacer} />
             </View>
-            <Text style={styles.progressSubtext}>
-              현재 {getPassLabel(currentSessionSnapshot.session.currentPassNo)} ·
-              남은 카드 {currentSessionSnapshot.pendingCount}개
-            </Text>
-            <Text style={styles.timerText}>
-              회독 타이머{" "}
-              {formatDuration(
-                getElapsedSeconds(currentSessionSnapshot.session),
-              )}
-            </Text>
-          </View>
 
-          <View style={styles.studyCard}>
-            <Text style={styles.kanji}>
-              {currentSessionSnapshot.currentCard.kanji}
-            </Text>
-            <Text style={styles.partOfSpeech}>
-              {currentSessionSnapshot.currentCard.partOfSpeech ?? "단어"}
-            </Text>
-
-            {currentSessionSnapshot.currentCard.exampleJp ? (
-              <View style={styles.exampleBox}>
-                <Text style={styles.exampleLabel}>예문</Text>
-                <Text style={styles.exampleText}>
-                  {currentSessionSnapshot.currentCard.exampleJp}
+            <View style={styles.progressPanel}>
+              <View style={styles.progressHeaderRow}>
+                <Text style={styles.progressText}>
+                  {getRoundLabel(
+                    currentSessionSnapshot.preset.completedStudyCount + 1,
+                  )}{" "}
+                  진행 중
+                </Text>
+                <Text style={styles.progressBadge}>
+                  {getStudyProgressLabel(currentSessionSnapshot)}
                 </Text>
               </View>
-            ) : null}
-
-            <View style={styles.revealBox}>
-              <Text style={styles.revealLabel}>한국어</Text>
-              {showMeaning ? (
-                <>
-                  <Text style={styles.revealText}>
-                    {currentSessionSnapshot.currentCard.meaningKo}
-                  </Text>
-                  {currentSessionSnapshot.currentCard.exampleKo ? (
-                    <Text style={styles.revealSubtext}>
-                      {currentSessionSnapshot.currentCard.exampleKo}
-                    </Text>
-                  ) : null}
-                </>
-              ) : null}
+              <Text style={styles.progressSubtext}>
+                현재 {getPassLabel(currentSessionSnapshot.session.currentPassNo)} ·
+                남은 카드 {currentSessionSnapshot.pendingCount}개
+              </Text>
+              <Text style={styles.timerText}>
+                회독 타이머{" "}
+                {formatDuration(
+                  getElapsedSeconds(currentSessionSnapshot.session),
+                )}
+              </Text>
             </View>
 
-            <View style={styles.revealBox}>
-              <Text style={styles.revealLabel}>히라가나</Text>
-              {showReading ? (
-                <>
-                  <Text style={styles.revealText}>
-                    {currentSessionSnapshot.currentCard.readingHiragana ??
-                      currentSessionSnapshot.currentCard.kana ??
-                      "-"}
-                  </Text>
-                  {currentSessionSnapshot.currentCard.exampleReadingHiragana ? (
-                    <Text style={styles.revealSubtext}>
-                      {
-                        currentSessionSnapshot.currentCard
-                          .exampleReadingHiragana
-                      }
-                    </Text>
-                  ) : null}
-                </>
-              ) : null}
-            </View>
+            <View style={styles.studyCard}>
+              <Text style={styles.kanji}>
+                {currentSessionSnapshot.currentCard.kanji}
+              </Text>
+              <Text style={styles.partOfSpeech}>
+                {currentSessionSnapshot.currentCard.partOfSpeech ?? "단어"}
+              </Text>
 
+              {currentSessionSnapshot.currentCard.exampleJp ? (
+                <View style={styles.exampleBox}>
+                  <Text style={styles.exampleLabel}>예문</Text>
+                  <Text style={styles.exampleText}>
+                    {currentSessionSnapshot.currentCard.exampleJp}
+                  </Text>
+                </View>
+              ) : null}
+
+              <View style={styles.revealBox}>
+                <Text style={styles.revealLabel}>한국어</Text>
+                {showMeaning ? (
+                  <>
+                    <Text style={styles.revealText}>
+                      {currentSessionSnapshot.currentCard.meaningKo}
+                    </Text>
+                    {currentSessionSnapshot.currentCard.exampleKo ? (
+                      <Text style={styles.revealSubtext}>
+                        {currentSessionSnapshot.currentCard.exampleKo}
+                      </Text>
+                    ) : null}
+                  </>
+                ) : null}
+              </View>
+
+              <View style={styles.revealBox}>
+                <Text style={styles.revealLabel}>히라가나</Text>
+                {showReading ? (
+                  <>
+                    <Text style={styles.revealText}>
+                      {currentSessionSnapshot.currentCard.readingHiragana ??
+                        currentSessionSnapshot.currentCard.kana ??
+                        "-"}
+                    </Text>
+                    {currentSessionSnapshot.currentCard.exampleReadingHiragana ? (
+                      <Text style={styles.revealSubtext}>
+                        {
+                          currentSessionSnapshot.currentCard
+                            .exampleReadingHiragana
+                        }
+                      </Text>
+                    ) : null}
+                  </>
+                ) : null}
+              </View>
+
+            </View>
+          </ScrollView>
+          <View style={styles.studyControls}>
             <View style={styles.toggleRow}>
               <Pressable
                 accessibilityRole="button"
@@ -503,9 +507,8 @@ function AppShell() {
                 <Text style={styles.actionButtonText}>알고있음</Text>
               </Pressable>
             </View>
-
           </View>
-        </ScrollView>
+        </View>
       ) : null}
 
       {(isPresetLoading || isSessionLoading) &&
@@ -907,6 +910,13 @@ const styles = StyleSheet.create({
   revealSubtext: {
     color: "#5a706b",
     lineHeight: 22,
+  },
+  studyControls: {
+    backgroundColor: "#ffffff",
+    padding: 16,
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#cde1d8",
   },
   toggleRow: {
     flexDirection: "row",
